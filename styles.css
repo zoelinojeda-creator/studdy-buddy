@@ -1,0 +1,133 @@
+/*
+  Estilos base de StudyBuddy.
+  El objetivo es mantener el CSS simple y fácil de leer.
+*/
+
+:root {
+  --bg: #f5f7ff;
+  --card: #ffffff;
+  --text: #1f2a44;
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --accent: #14b8a6;
+  --danger: #ef4444;
+  --shadow: 0 10px 25px rgba(31, 42, 68, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(180deg, #eef2ff 0%, var(--bg) 100%);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.app-container {
+  width: min(900px, 100%);
+  background-color: var(--card);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 24px;
+  display: grid;
+  gap: 20px;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+}
+
+.hero p {
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+.status-card,
+.pet-card,
+.activities,
+.feedback,
+.reset-section {
+  background: #f8faff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.points {
+  font-size: 2.2rem;
+  margin: 8px 0 0;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.mindy-emoji {
+  font-size: 3rem;
+  margin: 8px 0;
+}
+
+.mindy-state {
+  margin: 0;
+  font-weight: 600;
+}
+
+.buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.activity-btn,
+.reset-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+.activity-btn {
+  background-color: var(--primary);
+  color: #fff;
+}
+
+.activity-btn:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.reset-btn {
+  background-color: var(--danger);
+  color: #fff;
+  width: 100%;
+}
+
+.reset-btn:hover {
+  background-color: #dc2626;
+}
+
+#message {
+  margin: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Responsive: en pantallas pequeñas apilamos los botones */
+@media (max-width: 700px) {
+  .buttons-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .app-container {
+    padding: 18px;
+  }
+}
