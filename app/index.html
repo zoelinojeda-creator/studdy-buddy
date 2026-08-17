@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>StudyBuddy</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/app.css">
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+<div id="toast"></div>
+
+<!-- ══ INICIO ══ -->
+<div id="inicio" class="screen">
+  <div class="login-wrap">
+    <div class="logo-area">
+      <div class="mindy-row">
+        <div style="position:relative;">
+          <svg class="mindy-egg" id="mindyEgg" width="86" height="94" viewBox="0 0 90 100" onclick="SCREENS.inicio.pokeMindy()">
+            <ellipse cx="45" cy="60" rx="32" ry="36" fill="#2d4a2d"/>
+            <ellipse cx="45" cy="56" rx="28" ry="30" fill="#3a6b3a"/>
+            <path d="M36 44 Q45 36 54 44" stroke="#f9c846" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <circle cx="38" cy="52" r="6" fill="#1a1a1a"/><circle cx="38" cy="52" r="2.5" fill="white"/>
+            <circle cx="52" cy="52" r="6" fill="#1a1a1a"/><circle cx="52" cy="52" r="2.5" fill="white"/>
+            <circle cx="36" cy="62" r="5" fill="#ff6b6b" opacity=".45"/>
+            <circle cx="54" cy="62" r="5" fill="#ff6b6b" opacity=".45"/>
+            <path d="M40 42 Q45 34 50 42" stroke="#f9c846" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <text x="26" y="30" font-size="9" fill="#f9c846" opacity=".8">&#x2736;</text>
+            <text x="55" y="25" font-size="7" fill="#6ee7b7" opacity=".8">&#x2736;</text>
+          </svg>
+          <div class="bubble" id="mindyBubble">Hola!</div>
+        </div>
+      </div>
+      <div class="logo-txt">StudyBuddy</div>
+      <div class="logo-sub">Tu companero de estudio &#x2728;</div>
+    </div>
+    <div class="xp-deco"></div>
+    <div class="login-card">
+      <div class="tabs">
+        <button class="tab on" id="tabLogin" onclick="SCREENS.inicio.switchTab('login')">Entrar</button>
+        <button class="tab" id="tabReg" onclick="SCREENS.inicio.switchTab('reg')">Registro</button>
+      </div>
+      <!-- LOGIN -->
+      <div class="form-panel on" id="pLogin">
+        <form onsubmit="SCREENS.inicio.doLogin(event)">
+          <div class="fg"><label>Usuario o correo</label><span class="inp-ico">&#128100;</span><input class="inp-field" id="lUser" type="text" placeholder="tu@correo.com" autocomplete="username"></div>
+          <div class="fg"><label>Contrasena</label><span class="inp-ico">&#128274;</span><input class="inp-field" id="lPass" type="password" placeholder="&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;" autocomplete="current-password"></div>
+          <button type="submit" class="btn-gold" onclick="ripple(this,event)">Entrar &#x1F680;</button>
+        </form>
+        <button class="btn-ghost" onclick="SCREENS.inicio.doGuest()">&#x1F47B; Entrar como invitado</button>
+        <div class="social-row">
+          <button class="btn-social"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Google</button>
+          <button class="btn-social"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>GitHub</button>
+        </div>
+      </div>
+      <!-- REGISTRO -->
+      <div class="form-panel" id="pReg">
+        <div style="text-align:center;margin-bottom:10px;">
+          <div style="font-size:.78rem;color:var(--muted);margin-bottom:7px;font-weight:700;">Elige tu avatar</div>
+          <div class="avatars">
+            <span class="av on" onclick="SCREENS.inicio.selAv(this,'huevo')">&#x1F423;</span>
+            <span class="av" onclick="SCREENS.inicio.selAv(this,'zorro')">&#x1F98A;</span>
+            <span class="av" onclick="SCREENS.inicio.selAv(this,'rana')">&#x1F438;</span>
+            <span class="av" onclick="SCREENS.inicio.selAv(this,'pulpo')">&#x1F419;</span>
+            <span class="av" onclick="SCREENS.inicio.selAv(this,'mariposa')">&#x1F98B;</span>
+          </div>
+        </div>
+        <form onsubmit="SCREENS.inicio.doReg(event)">
+          <div class="fg"><label>Usuario</label><span class="inp-ico">&#128100;</span><input class="inp-field" id="rUser" type="text" placeholder="Estudiante123" autocomplete="username"></div>
+          <div class="fg"><label>Correo</label><span class="inp-ico">&#128231;</span><input class="inp-field" id="rEmail" type="email" placeholder="tu@correo.com" autocomplete="email"></div>
+          <div class="fg">
+            <label>Contrasena</label><span class="inp-ico">&#128274;</span>
+            <input class="inp-field" id="rPass" type="password" placeholder="Minimo 6 caracteres" autocomplete="new-password" oninput="SCREENS.inicio.pwStr(this.value)">
+            <div class="pw-track" id="pwTrack"></div>
+            <div class="pw-lbl" id="pwLbl">Ingresa una contrasena</div>
+          </div>
+          <button type="submit" class="btn-gold" onclick="ripple(this,event)">Crear cuenta &#x1F389;</button>
+        </form>
+        <button class="btn-ghost" onclick="SCREENS.inicio.doGuest()">&#x1F47B; Entrar como invitado</button>
+        <div class="social-row">
+          <button class="btn-social"><svg width="15" height="15" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Google</button>
+          <button class="btn-social"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>GitHub</button>
+        </div>
+      </div>
+      <div class="auth-foot" id="authFoot">No tienes cuenta? <a onclick="SCREENS.inicio.switchTab('reg')">Registrate gratis</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MASCOTA ══ -->
+<div id="mascota" class="screen">
+  <div class="topbar">
+    <span class="tb-title" id="tbName">Hola!</span>
+    <div class="xp-chip">&#11088; <span id="tbXP">0</span> XP</div>
+  </div>
+  <div class="arena">
+    <div class="coins-row">
+      <div class="coin">&#11088;<span class="coin-lbl">+10</span></div>
+      <div class="coin">&#11088;<span class="coin-lbl">+20</span></div>
+      <div class="coin">&#11088;<span class="coin-lbl">+30</span></div>
+    </div>
+    <div class="monster-wrap" onclick="SCREENS.mascota.poke()">
+      <div class="outfit-ico" id="outfitIco"></div>
+      <svg class="msv" id="msvg" width="116" height="126" viewBox="0 0 120 130">
+        <path d="M60 110 C25 110 15 85 15 65 C15 35 30 20 60 20 C90 20 105 35 105 65 C105 85 95 110 60 110Z" fill="#2d7a3a"/>
+        <path d="M60 105 C28 105 20 82 20 63 C20 37 33 25 60 25 C87 25 100 37 100 63 C100 82 92 105 60 105Z" fill="#3a9a4a"/>
+        <line x1="35" y1="25" x2="25" y2="8" stroke="#4a6a2a" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="25" cy="7" r="5" fill="#5a7a35"/>
+        <line x1="85" y1="25" x2="95" y2="8" stroke="#4a6a2a" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="95" cy="7" r="5" fill="#5a7a35"/>
+        <circle cx="60" cy="58" r="20" fill="#1a1a2e"/>
+        <circle cx="60" cy="58" r="9" fill="white"/>
+        <circle cx="63" cy="55" r="3" fill="white" opacity=".8"/>
+        <polyline points="44,78 49,74 54,78 59,74 64,78 69,74 74,78" stroke="#1a1a2e" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+        <ellipse cx="30" cy="90" rx="7" ry="5" fill="#2d7a3a" transform="rotate(-20,30,90)"/>
+        <ellipse cx="42" cy="100" rx="7" ry="4" fill="#2d7a3a"/>
+        <ellipse cx="55" cy="104" rx="6" ry="4" fill="#2d7a3a"/>
+        <ellipse cx="68" cy="104" rx="6" ry="4" fill="#2d7a3a"/>
+        <ellipse cx="80" cy="100" rx="7" ry="4" fill="#2d7a3a"/>
+        <ellipse cx="90" cy="90" rx="7" ry="5" fill="#2d7a3a" transform="rotate(20,90,90)"/>
+      </svg>
+      <div class="m-name">Mindy <span class="lvl-badge" id="mindyLvl">Nv.1</span></div>
+    </div>
+    <div class="h-wrap">
+      <div class="h-row"><span>&#129366; Hambre</span><span id="hPct">75%</span></div>
+      <div class="h-track"><div class="h-fill" id="hFill" style="width:75%"></div></div>
+    </div>
+    <div class="mood" id="moodEl">&#x1F60A; Feliz</div>
+    <div class="arena-floor" style="width:188px;height:13px;background:radial-gradient(ellipse,rgba(110,231,183,.3) 0%,transparent 70%);border-radius:50%;margin-bottom:-2px;"></div>
+  </div>
+  <div class="pet-content">
+    <div class="xp-row">
+      <span style="font-size:1.4rem;">&#11088;</span>
+      <div class="xp-bar-w">
+        <div class="xp-lbl"><span>Nivel <span id="uLvl">1</span></span><span id="xpNext">0/100 XP</span></div>
+        <div class="xp-track"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+        <div style="font-size:.7rem;color:var(--muted);margin-top:2px;">prox. nivel</div>
+      </div>
+    </div>
+    <div class="section-box">
+      <div style="font-family:'Fredoka One',cursive;font-size:.95rem;color:var(--accent);margin-bottom:9px;">&#127919; Meta diaria</div>
+      <div class="goals-grid">
+        <button class="g-btn" id="g-casual" onclick="SCREENS.mascota.setGoal('casual')"><span class="g-ico">&#127807;</span><span class="g-name">Casual</span><span class="g-desc">Una vez al dia</span></button>
+        <button class="g-btn on" id="g-normal" onclick="SCREENS.mascota.setGoal('normal')"><span class="g-ico">&#128218;</span><span class="g-name">Normal</span><span class="g-desc">Un rato al dia</span></button>
+        <button class="g-btn" id="g-intenso" onclick="SCREENS.mascota.setGoal('intenso')"><span class="g-ico">&#128293;</span><span class="g-name">Intenso</span><span class="g-desc">Varias veces</span></button>
+        <button class="g-btn" id="g-extremo" onclick="SCREENS.mascota.setGoal('extremo')"><span class="g-ico">&#9889;</span><span class="g-name">Extremo</span><span class="g-desc">Constante</span></button>
+      </div>
+      <div class="goal-hint" id="gHint">Equilibrado — hambre baja cada 40 seg</div>
+    </div>
+    <div class="act-grid">
+      <button class="act-btn" onclick="SCREENS.mascota.openShop('food')"><span class="act-ico">&#129366;</span>Comida</button>
+      <button class="act-btn" onclick="SCREENS.mascota.openShop('outfit')"><span class="act-ico">&#128085;</span>Ropa</button>
+      <button class="act-btn study-btn" id="studyBtn" onclick="showScreen('actividad')"><span class="act-ico">&#128218;</span><span class="study-label">Estudiar</span><span class="study-sub">Ganar XP</span></button>
+    </div>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-val" id="stSes">0</div><div class="stat-lbl">Sesiones</div></div>
+      <div class="stat-box"><div class="stat-val" id="stXP">0</div><div class="stat-lbl">XP Total</div></div>
+      <div class="stat-box"><div class="stat-val" id="stStr">0</div><div class="stat-lbl">Racha &#128293;</div></div>
+    </div>
+    <!-- HISTORIAL -->
+    <div class="hist-section">
+      <div class="hist-header" onclick="SCREENS.mascota.toggleHist()">
+        <div class="hist-title">&#128218; Temas estudiados</div>
+        <button class="hist-toggle" id="histToggle">&#9660; ver</button>
+      </div>
+      <div class="hist-body" id="histBody" style="display:none;"></div>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+</div>
+
+<!-- SHOP MODAL -->
+<div class="modal-ov" id="shopModal" onclick="SCREENS.mascota.closeShopOv(event)">
+  <div class="shop-sheet">
+    <div class="sh-head">
+      <div class="sh-title" id="shTitle">Tienda</div>
+      <div class="sh-xp">&#11088; <span id="shXP">0</span> XP</div>
+      <button class="sh-close" onclick="SCREENS.mascota.closeShop()">&#x2715;</button>
+    </div>
+    <div class="sh-grid" id="shGrid"></div>
+  </div>
+</div>
+
+<!-- ══ ACTIVIDAD ══ -->
+<div id="actividad" class="screen">
+  <div class="topbar">
+    <div class="tb-left">
+      <button class="back-btn" onclick="showScreen('mascota')">&#8592; Mindy</button>
+      <span class="tb-title">Como quieres estudiar?</span>
+    </div>
+    <div class="xp-chip">&#11088; <span id="actXP">0</span> XP</div>
+  </div>
+  <div class="method-page">
+    <div class="page-h1">Elige tu metodo</div>
+    <div class="page-sub">Primero el metodo, luego cargas tu material</div>
+    <div class="method-grid">
+      <div class="m-card" id="mc-flash" onclick="SCREENS.actividad.pick(this,'flash')">
+        <span class="m-badge badge-hot">Popular</span>
+        <span class="m-ico">&#x1F0CF;</span>
+        <span class="m-name">Flashcards</span>
+        <span class="m-desc">Ve la pregunta, piensa y revela la respuesta</span>
+      </div>
+      <div class="m-card" id="mc-quiz" onclick="SCREENS.actividad.pick(this,'quiz')">
+        <span class="m-ico">&#127919;</span>
+        <span class="m-name">Quiz</span>
+        <span class="m-desc">4 opciones con explicacion al responder</span>
+      </div>
+      <div class="m-card" id="mc-complete" onclick="SCREENS.actividad.pick(this,'complete')">
+        <span class="m-ico">&#9999;&#65039;</span>
+        <span class="m-name">Completar</span>
+        <span class="m-desc">Escribe la palabra que falta en cada oracion</span>
+      </div>
+      <div class="m-card" id="mc-rapid" onclick="SCREENS.actividad.pick(this,'rapid')">
+        <span class="m-badge badge-new">Nuevo</span>
+        <span class="m-ico">&#9889;</span>
+        <span class="m-name">Quiz Rapido</span>
+        <span class="m-desc">Responde rapido y acumula racha</span>
+      </div>
+    </div>
+    <button class="btn-cont" id="btnCont" onclick="showScreen('material')">Cargar material &#8594;</button>
+  </div>
+</div>
+
+<!-- ══ MATERIAL ══ -->
+<div id="material" class="screen">
+  <nav class="mat-navbar">
+    <div class="tb-left">
+      <button class="back-btn" onclick="showScreen('actividad')">&#8592; Metodo</button>
+      <div class="nav-logo">StudyBuddy</div>
+    </div>
+    <div class="nav-r">
+      <div class="nav-xp">&#11088; <span id="matXP">0</span></div>
+      <span class="nav-av" id="matAv">&#x1F423;</span>
+    </div>
+  </nav>
+  <div class="mat-content">
+    <div class="method-pill" id="matPill">&#x1F0CF; Flashcards</div>
+    <div class="section-box">
+      <div class="sec-title">Paso 1 — Tema</div>
+      <input class="inp-plain" id="inpSubj" placeholder="Materia (ej: Historia)" oninput="SCREENS.material.calcProg()">
+      <input class="inp-plain" id="inpTopic" placeholder="Tema especifico (ej: Revolucion Francesa)" oninput="SCREENS.material.calcProg()" style="margin-bottom:0;">
+      <div class="chips" id="chipsRow">
+        <span class="chip" onclick="SCREENS.material.setChip(this,'Matematicas')">Matematicas</span>
+        <span class="chip" onclick="SCREENS.material.setChip(this,'Historia')">Historia</span>
+        <span class="chip" onclick="SCREENS.material.setChip(this,'Biologia')">Biologia</span>
+        <span class="chip" onclick="SCREENS.material.setChip(this,'Quimica')">Quimica</span>
+        <span class="chip" onclick="SCREENS.material.setChip(this,'Fisica')">Fisica</span>
+        <span class="chip" onclick="SCREENS.material.setChip(this,'Ingles')">Ingles</span>
+        <span class="chip" onclick="SCREENS.material.setChip(this,'Literatura')">Literatura</span>
+        <span class="chip" onclick="SCREENS.material.setChip(this,'Geografia')">Geografia</span>
+      </div>
+    </div>
+    <div class="section-box">
+      <div class="sec-title">Paso 2 — Cantidad de preguntas</div>
+      <p class="sec-hint">Minimo 5, maximo 20. Cada acierto suma 10 XP; mas preguntas, mas XP por pasada.</p>
+      <div class="qty-row">
+        <button type="button" class="qty-btn" onclick="SCREENS.material.nudgeCount(-1)">-</button>
+        <div class="qty-val"><span id="qCountEl">5</span> preguntas</div>
+        <button type="button" class="qty-btn" onclick="SCREENS.material.nudgeCount(1)">+</button>
+      </div>
+    </div>
+    <div class="section-box upcoming">
+      <div class="sec-title">Proximas mejoras — Apuntes y TXT</div>
+      <p class="sec-hint">En esta prueba de concepto la IA genera solo con materia y tema, para no gastar tantos tokens. Pegar apuntes o cargar un .txt para contextualizar las preguntas queda para mas adelante.</p>
+    </div>
+    <div class="section-box">
+      <div class="sec-title">Opcional — Clave de Gemini</div>
+      <input class="inp-plain" id="inpAiKey" type="password" placeholder="Si no hay clave, se usan preguntas de demo" style="margin-bottom:0;" oninput="SCREENS.material.saveKey(this.value)" onchange="SCREENS.material.saveKey(this.value)">
+    </div>
+  </div>
+  <div class="sticky-bot">
+    <div class="prog-w">
+      <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+      <div class="prog-lbl" id="progLbl">Completa materia y tema</div>
+    </div>
+    <button class="btn-gen" id="btnGen" onclick="SCREENS.material.generate()">Generar con IA! &#x2728;</button>
+  </div>
+  <div class="load-ov" id="loadOv">
+    <div class="load-card">
+      <div class="spinner"></div>
+      <div class="load-title">Mindy prepara tu actividad... &#x1F9E0;</div>
+      <ul class="step-list" id="stepList">
+        <li id="st0"><div class="step-dot">1</div>Usando materia y tema...</li>
+        <li id="st1"><div class="step-dot">2</div>Generando preguntas...</li>
+        <li id="st2"><div class="step-dot">3</div>Anadiendo explicaciones...</li>
+        <li id="st3"><div class="step-dot">4</div>Casi listo!</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══ JUEGO ══ -->
+<div id="juego" class="screen">
+  <div class="juego-head">
+    <div class="juego-title" id="jTitle">Actividad</div>
+    <div class="juego-head-right">
+      <div class="score-chip combo-chip" id="comboChip" hidden>&#128293; Racha x<span id="comboEl">0</span></div>
+      <div class="score-chip">&#11088; <span id="scoreEl">0</span> pts</div>
+    </div>
+  </div>
+  <div class="dots-row" id="dotsRow"></div>
+  <div class="juego-body" id="jBody"></div>
+</div>
+
+<!-- ══ RESULTADOS ══ -->
+<div id="resultados" class="screen">
+  <div class="res-card">
+    <span class="res-emoji" id="resEmoji">&#127942;</span>
+    <div class="res-title" id="resTitle">Excelente!</div>
+    <div class="res-sub" id="resSub">Dominaste el tema</div>
+    <div class="xp-badge" id="xpBadge">+50 XP ganados</div>
+    <div class="res-stats">
+      <div class="rs"><div class="rs-val green" id="rsOk">0</div><div class="rs-lbl">Correctas &#x2713;</div></div>
+      <div class="rs"><div class="rs-val red" id="rsFail">0</div><div class="rs-lbl">Errores &#x2717;</div></div>
+      <div class="rs"><div class="rs-val gold" id="rsAcc">0%</div><div class="rs-lbl">Precision</div></div>
+    </div>
+    <div class="res-btns">
+      <button class="btn-out" onclick="SCREENS.resultados.nuevoTema()">&#128218; Nuevo tema</button>
+      <button class="btn-pri" onclick="SCREENS.resultados.repetir()">&#x1F504; Repetir</button>
+    </div>
+    <div class="xp-note" id="xpNote"></div>
+  </div>
+</div>
+
+<script src="../js/data.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/storage.js"></script>
+<script src="../js/ai.js"></script>
+<script src="../js/router.js"></script>
+<script src="../js/screens/inicio.js"></script>
+<script src="../js/screens/mascota.js"></script>
+<script src="../js/screens/actividad.js"></script>
+<script src="../js/screens/material.js"></script>
+<script src="../js/screens/juego.js"></script>
+<script src="../js/screens/resultados.js"></script>
+<script src="../js/app.js"></script>
+</body>
+</html>

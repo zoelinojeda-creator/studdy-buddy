@@ -1,0 +1,4 @@
+(function() {
+  bootstrapStorage();
+  showScreen('inicio');
+})();
