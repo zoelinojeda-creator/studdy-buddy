@@ -108,6 +108,20 @@ function saveUser() {
   } catch(e) { console.warn('[Supabase] usuarios.update excepcion:', e); }
 }
 
+// Refresca APP.user desde la tabla usuarios (para sesiones cacheadas localmente,
+// por ejemplo al recargar la pagina). A diferencia del login, NO incrementa sessions.
+function fetchUserFromSupabase() {
+  if (!isSupabaseUser()) return Promise.resolve(false);
+  return supabase.from('usuarios').select('*').eq('id', APP.user.id).single()
+    .then(function(res) {
+      if (res.error || !res.data) return false;
+      APP.user = res.data;
+      saveUser();
+      return true;
+    })
+    .catch(function(e) { console.warn('[Supabase] usuarios.select excepcion:', e); return false; });
+}
+
 function ownsOutfit(id) {
   var owned = APP.mindy.ownedOutfits || [];
   for (var i = 0; i < owned.length; i++) if (owned[i] === id) return true;

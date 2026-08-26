@@ -69,6 +69,17 @@ SCREENS.inicio = (function() {
         APP.user = u;
         loadMindy();
         showScreen('mascota');
+        if (isSupabaseUser()) {
+          Promise.all([
+            fetchUserFromSupabase().catch(function(){}),
+            fetchMindyFromSupabase().catch(function(){}),
+            fetchHistorialFromSupabase().catch(function(){})
+          ]).then(function() {
+            if (_cur === 'mascota' && SCREENS.mascota && SCREENS.mascota.init) {
+              SCREENS.mascota.init();
+            }
+          });
+        }
         return;
       }
       startCanvas();
