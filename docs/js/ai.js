@@ -9,6 +9,9 @@ function saveAiKey(key) {
 }
 
 var GEMINI_MODEL = 'gemini-3.5-flash';
+var GEMINI_MODEL_FALLBACK = 'gemini-2.5-flash';
+var GEMINI_503_RETRIES = 2;
+var GEMINI_503_RETRY_DELAY_MS = 1500;
 
 var SCHEMA_QUIZ = {
   type: 'ARRAY',
@@ -196,8 +199,9 @@ function geminiErrorMessage(r, d) {
   return apiMsg || ('HTTP ' + r.status);
 }
 
-function geminiGenerate(key, prompt, kind, extraCfg) {
-  var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + GEMINI_MODEL + ':generateContent';
+function geminiGenerate(key, prompt, kind, extraCfg, model) {
+  var useModel = model || GEMINI_MODEL;
+  var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + useModel + ':generateContent';
   var cfg = {
     temperature: 0.3,
         maxOutputTokens: 16384,
@@ -230,16 +234,41 @@ function geminiGenerate(key, prompt, kind, extraCfg) {
   });
 }
 
+function wait(ms) {
+  return new Promise(function(resolve) { setTimeout(resolve, ms); });
+}
+
+// Reintenta la misma llamada a Gemini cuando responde 503 (servicio saturado).
+function geminiGenerateWithRetry(key, prompt, kind, extraCfg, model, retriesLeft) {
+  var useModel = model || GEMINI_MODEL;
+  return geminiGenerate(key, prompt, kind, extraCfg, useModel).catch(function(err) {
+    if (err && err.status === 503 && retriesLeft > 0) {
+      console.warn('[AI] 503 de ' + useModel + ', reintentando en ' + (GEMINI_503_RETRY_DELAY_MS / 1000) + 's (' + retriesLeft + ' intento(s) restante(s))...');
+      return wait(GEMINI_503_RETRY_DELAY_MS).then(function() {
+        return geminiGenerateWithRetry(key, prompt, kind, extraCfg, useModel, retriesLeft - 1);
+      });
+    }
+    throw err;
+  });
+}
+
 function callAI(prompt, kind) {
   var key = getAiKey();
   if (!key) return Promise.reject(new Error('sin clave de IA'));
 
   console.log('[AI] Enviando prompt (' + prompt.length + ' chars) a ' + GEMINI_MODEL);
-  return geminiGenerate(key, prompt, kind, { thinkingConfig: { thinkingLevel: 'minimal' } })
+  return geminiGenerateWithRetry(key, prompt, kind, { thinkingConfig: { thinkingLevel: 'minimal' } }, GEMINI_MODEL, GEMINI_503_RETRIES)
     .catch(function(err) {
       if (err && err.status === 400) {
         console.warn('[AI] Reintento sin thinkingConfig:', err.message);
-        return geminiGenerate(key, prompt, kind, null);
+        return geminiGenerateWithRetry(key, prompt, kind, null, GEMINI_MODEL, GEMINI_503_RETRIES);
+      }
+      throw err;
+    })
+    .catch(function(err) {
+      if (err && err.status === 503) {
+        console.warn('[AI] Modelo principal (' + GEMINI_MODEL + ') sigue devolviendo 503 tras los reintentos; probando modelo de respaldo ' + GEMINI_MODEL_FALLBACK + '...');
+        return geminiGenerateWithRetry(key, prompt, kind, { thinkingConfig: { thinkingLevel: 'minimal' } }, GEMINI_MODEL_FALLBACK, 0);
       }
       throw err;
     })
