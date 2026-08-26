@@ -112,6 +112,14 @@ SCREENS.material = (function() {
         APP.activity = items;
         showScreen('juego');
       }).catch(function(err) {
+        if (err && err.isCapacity) {
+          if (_stepTimer) { clearInterval(_stepTimer); _stepTimer = null; }
+          var ov = document.getElementById('loadOv'); if (ov) ov.classList.remove('show');
+          toast('No hay disponibilidad en nuestra API debido a carga excesiva de preguntas. Podes ingresar tu clave personal de Gemini para continuar.', 5000);
+          var ak = document.getElementById('inpAiKey');
+          if (ak) { ak.focus(); ak.scrollIntoView({behavior:'smooth', block:'center'}); }
+          return;
+        }
         var msg = err && err.message ? err.message : String(err);
         console.error('[StudyBuddy] Gemini fallo:', msg, err);
         toast('IA fallo (' + msg + ') — usando preguntas de demo', 4000);

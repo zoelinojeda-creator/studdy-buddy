@@ -13,6 +13,10 @@ var GEMINI_MODEL_FALLBACK = 'gemini-2.5-flash';
 var GEMINI_503_RETRIES = 2;
 var GEMINI_503_RETRY_DELAY_MS = 1500;
 
+// Edge Function que genera preguntas con la clave de Gemini del servidor,
+// para usuarios que no cargaron su propia clave.
+var EDGE_FUNCTION_URL = 'https://iafjpoeznbdotfwtepdw.supabase.co/functions/v1/dynamic-handler';
+
 var SCHEMA_QUIZ = {
   type: 'ARRAY',
   items: {
@@ -252,26 +256,59 @@ function geminiGenerateWithRetry(key, prompt, kind, extraCfg, model, retriesLeft
   });
 }
 
+// Sin clave propia: pasa por el Edge Function (usa la clave de Gemini del servidor).
+// Devuelve la respuesta cruda de Gemini, mismo formato que geminiGenerate().
+function edgeFunctionGenerate(prompt, kind) {
+  return fetch(EDGE_FUNCTION_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+      'apikey': SUPABASE_ANON_KEY
+    },
+    body: JSON.stringify({ prompt: prompt, kind: kind })
+  }).then(function(r) {
+    return r.json().catch(function() { return {}; }).then(function(d) {
+      if (!r.ok) {
+        if (d && d.error === 'capacity') {
+          var capErr = new Error(d.message || 'No hay disponibilidad en nuestra API debido a carga excesiva de preguntas.');
+          capErr.isCapacity = true;
+          throw capErr;
+        }
+        throw new Error((d && d.message) || ('HTTP ' + r.status));
+      }
+      return d;
+    });
+  });
+}
+
 function callAI(prompt, kind) {
   var key = getAiKey();
-  if (!key) return Promise.reject(new Error('sin clave de IA'));
+  var source;
 
-  console.log('[AI] Enviando prompt (' + prompt.length + ' chars) a ' + GEMINI_MODEL);
-  return geminiGenerateWithRetry(key, prompt, kind, { thinkingConfig: { thinkingLevel: 'minimal' } }, GEMINI_MODEL, GEMINI_503_RETRIES)
-    .catch(function(err) {
-      if (err && err.status === 400) {
-        console.warn('[AI] Reintento sin thinkingConfig:', err.message);
-        return geminiGenerateWithRetry(key, prompt, kind, null, GEMINI_MODEL, GEMINI_503_RETRIES);
-      }
-      throw err;
-    })
-    .catch(function(err) {
-      if (err && err.status === 503) {
-        console.warn('[AI] Modelo principal (' + GEMINI_MODEL + ') sigue devolviendo 503 tras los reintentos; probando modelo de respaldo ' + GEMINI_MODEL_FALLBACK + '...');
-        return geminiGenerateWithRetry(key, prompt, kind, { thinkingConfig: { thinkingLevel: 'minimal' } }, GEMINI_MODEL_FALLBACK, 0);
-      }
-      throw err;
-    })
+  if (key) {
+    console.log('[AI] Enviando prompt (' + prompt.length + ' chars) a ' + GEMINI_MODEL);
+    source = geminiGenerateWithRetry(key, prompt, kind, { thinkingConfig: { thinkingLevel: 'minimal' } }, GEMINI_MODEL, GEMINI_503_RETRIES)
+      .catch(function(err) {
+        if (err && err.status === 400) {
+          console.warn('[AI] Reintento sin thinkingConfig:', err.message);
+          return geminiGenerateWithRetry(key, prompt, kind, null, GEMINI_MODEL, GEMINI_503_RETRIES);
+        }
+        throw err;
+      })
+      .catch(function(err) {
+        if (err && err.status === 503) {
+          console.warn('[AI] Modelo principal (' + GEMINI_MODEL + ') sigue devolviendo 503 tras los reintentos; probando modelo de respaldo ' + GEMINI_MODEL_FALLBACK + '...');
+          return geminiGenerateWithRetry(key, prompt, kind, { thinkingConfig: { thinkingLevel: 'minimal' } }, GEMINI_MODEL_FALLBACK, 0);
+        }
+        throw err;
+      });
+  } else {
+    console.log('[AI] Sin clave propia — usando Edge Function (' + prompt.length + ' chars)');
+    source = edgeFunctionGenerate(prompt, kind);
+  }
+
+  return source
     .then(function(d) {
       if (d.promptFeedback && d.promptFeedback.blockReason) {
         throw new Error('Bloqueado: ' + d.promptFeedback.blockReason);
