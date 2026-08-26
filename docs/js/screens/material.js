@@ -2,6 +2,27 @@
 SCREENS.material = (function() {
   var _stepTimer = null;
 
+  function genErrorMessage(err) {
+    if (err && err.displayMessage) return err.displayMessage;
+    var t = err && err.errorType;
+    if (t === 'invalid_key') return 'Tu clave de Gemini no funciona en este momento (puede estar mal escrita, vencida, o sin cuota disponible). Revisala e intenta de nuevo, o borrala para usar la IA compartida de StudyBuddy.';
+    if (t === 'capacity') return 'No hay disponibilidad en nuestra API compartida debido a carga excesiva de preguntas. Podes ingresar tu clave personal de Gemini para continuar.';
+    var motivo = err && err.message ? err.message : String(err);
+    return 'Hubo un problema generando las preguntas (' + motivo + '). Intenta de nuevo en un momento.';
+  }
+
+  function showGenError(err) {
+    var msgEl = document.getElementById('genErrorMsg');
+    if (msgEl) msgEl.textContent = genErrorMessage(err);
+    var ov = document.getElementById('genErrorOv');
+    if (ov) ov.classList.add('show');
+    var t = err && err.errorType;
+    if (t === 'invalid_key' || t === 'capacity') {
+      var ak = document.getElementById('inpAiKey');
+      if (ak) { ak.focus(); ak.scrollIntoView({behavior:'smooth', block:'center'}); }
+    }
+  }
+
   return {
     init: function() {
       // Nav
@@ -39,6 +60,11 @@ SCREENS.material = (function() {
     destroy: function() {
       if (_stepTimer) { clearInterval(_stepTimer); _stepTimer = null; }
       var ov = document.getElementById('loadOv'); if (ov) ov.classList.remove('show');
+      var eov = document.getElementById('genErrorOv'); if (eov) eov.classList.remove('show');
+    },
+    retryGenerate: function() {
+      var eov = document.getElementById('genErrorOv'); if (eov) eov.classList.remove('show');
+      this.generate();
     },
     setChip: function(el, name) {
       var inp = document.getElementById('inpSubj'); if (inp) inp.value = name;
@@ -68,6 +94,7 @@ SCREENS.material = (function() {
       var count = clampQuestionCount(APP.session.questionCount);
       APP.session.questionCount = count;
       saveSession();
+      var eov = document.getElementById('genErrorOv'); if (eov) eov.classList.remove('show');
       var ov = document.getElementById('loadOv'); if (ov) ov.classList.add('show');
       for (var i = 0; i < 4; i++) { var el = document.getElementById('st' + i); if (el) el.classList.remove('done'); }
       var si = 0;
@@ -106,25 +133,29 @@ SCREENS.material = (function() {
       var keyEl = document.getElementById('inpAiKey');
       if (keyEl) saveAiKey(keyEl.value);
       callAI(prompt, method).then(function(data) {
-        var items = fitQuestionCount(normalizeAiItems(method, data), count, method, subj, topic);
-        if (!items || !items.length) throw new Error('El array de preguntas vino vacio');
+        var items = fitQuestionCount(normalizeAiItems(method, data), count);
+        if (!items || !items.length) {
+          var emptyErr = new Error('sin preguntas validas');
+          emptyErr.errorType = 'unknown';
+          emptyErr.displayMessage = 'La IA no genero preguntas validas para este tema. Intenta de nuevo o proba con otro tema.';
+          throw emptyErr;
+        }
+        if (items.length < count) {
+          toast('Se generaron ' + items.length + ' de ' + count + ' preguntas solicitadas', 4000);
+        }
         console.log('[StudyBuddy] IA genero', items.length, 'preguntas:', items);
         APP.activity = items;
+        // Red de seguridad: si algun bug futuro dejara APP.activity vacio pese a los chequeos de arriba,
+        // no entrar a jugar sin preguntas.
+        if (!APP.activity || !APP.activity.length) {
+          APP.activity = getDemoData(method, subj, topic, count);
+        }
         showScreen('juego');
       }).catch(function(err) {
-        if (err && err.isCapacity) {
-          if (_stepTimer) { clearInterval(_stepTimer); _stepTimer = null; }
-          var ov = document.getElementById('loadOv'); if (ov) ov.classList.remove('show');
-          toast('No hay disponibilidad en nuestra API debido a carga excesiva de preguntas. Podes ingresar tu clave personal de Gemini para continuar.', 5000);
-          var ak = document.getElementById('inpAiKey');
-          if (ak) { ak.focus(); ak.scrollIntoView({behavior:'smooth', block:'center'}); }
-          return;
-        }
-        var msg = err && err.message ? err.message : String(err);
-        console.error('[StudyBuddy] Gemini fallo:', msg, err);
-        toast('IA fallo (' + msg + ') — usando preguntas de demo', 4000);
-        APP.activity = getDemoData(method, subj, topic, count);
-        showScreen('juego');
+        if (_stepTimer) { clearInterval(_stepTimer); _stepTimer = null; }
+        var ov = document.getElementById('loadOv'); if (ov) ov.classList.remove('show');
+        console.error('[StudyBuddy] Generacion fallo:', err && err.message, err);
+        showGenError(err);
       });
     }
   };

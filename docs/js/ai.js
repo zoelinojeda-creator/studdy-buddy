@@ -203,6 +203,20 @@ function geminiErrorMessage(r, d) {
   return apiMsg || ('HTTP ' + r.status);
 }
 
+// Clasifica cualquier error que salga de callAI() en un errorType que material.js
+// pueda usar para mostrar un mensaje especifico (invalid_key / capacity / unknown).
+function classifyAiError(err) {
+  if (!err) return new Error('Error desconocido');
+  if (!err.errorType) {
+    if (err.status === 400 && /api key not valid/i.test(err.message || '')) {
+      err.errorType = 'invalid_key';
+    } else {
+      err.errorType = 'unknown';
+    }
+  }
+  return err;
+}
+
 function geminiGenerate(key, prompt, kind, extraCfg, model) {
   var useModel = model || GEMINI_MODEL;
   var url = 'https://generativelanguage.googleapis.com/v1beta/models/' + useModel + ':generateContent';
@@ -272,7 +286,7 @@ function edgeFunctionGenerate(prompt, kind) {
       if (!r.ok) {
         if (d && d.error === 'capacity') {
           var capErr = new Error(d.message || 'No hay disponibilidad en nuestra API debido a carga excesiva de preguntas.');
-          capErr.isCapacity = true;
+          capErr.errorType = 'capacity';
           throw capErr;
         }
         throw new Error((d && d.message) || ('HTTP ' + r.status));
@@ -329,7 +343,8 @@ function callAI(prompt, kind) {
       }
       console.log('[AI] JSON parseado OK, items:', Array.isArray(parsed) ? parsed.length : parsed);
       return parsed;
-    });
+    })
+    .catch(function(err) { throw classifyAiError(err); });
 }
 
 function cloneDemoItem(it, i) {
@@ -378,15 +393,8 @@ function getDemoData(method, subj, topic, count) {
   return out;
 }
 
-function fitQuestionCount(items, count, method, subj, topic) {
+function fitQuestionCount(items, count) {
   count = clampQuestionCount(count);
   items = items ? items.slice() : [];
-  if (items.length >= count) return items.slice(0, count);
-  var demo = getDemoData(method, subj, topic, count);
-  var i = 0;
-  while (items.length < count && i < demo.length) {
-    items.push(demo[i]);
-    i++;
-  }
-  return items.slice(0, count);
+  return items.length > count ? items.slice(0, count) : items;
 }
