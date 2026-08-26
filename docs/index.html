@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>StudyBuddy</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/app.css?v=1">
+<link rel="stylesheet" href="css/app.css?v=2">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cellipse cx='16' cy='17' rx='13' ry='14' fill='%232d7a3a'/%3E%3Cellipse cx='16' cy='16' rx='11' ry='12' fill='%233a9a4a'/%3E%3Ccircle cx='16' cy='15' r='6' fill='%231a1a2e'/%3E%3Ccircle cx='16' cy='15' r='2.7' fill='white'/%3E%3Ccircle cx='17.6' cy='13.4' r='1' fill='white' opacity='.8'/%3E%3Cpolyline points='10,23 12,21 14,23 16,21 18,23 20,21 22,23' stroke='%231a1a2e' stroke-width='1.4' fill='none' stroke-linejoin='round'/%3E%3C/svg%3E">
 </head>
 <body>
@@ -85,7 +85,10 @@
 <!-- ══ MASCOTA ══ -->
 <div id="mascota" class="screen">
   <div class="topbar">
-    <span class="tb-title" id="tbName">Hola!</span>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span class="tb-title" id="tbName">Hola!</span>
+      <button onclick="SCREENS.mascota.confirmLogout()" title="Cerrar sesion" style="background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:2px 4px;line-height:1;">&#x1F6AA;</button>
+    </div>
     <div class="xp-chip">&#11088; <span id="tbXP">0</span> XP</div>
   </div>
   <div class="arena">
@@ -326,19 +329,19 @@
   </div>
 </div>
 
-<script src="js/data.js?v=1"></script>
-<script src="js/utils.js?v=1"></script>
-<script src="js/storage.js?v=1"></script>
-<script src="js/ai.js?v=1"></script>
+<script src="js/data.js?v=2"></script>
+<script src="js/utils.js?v=2"></script>
+<script src="js/storage.js?v=2"></script>
+<script src="js/ai.js?v=2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabaseClient.js?v=1"></script>
-<script src="js/router.js?v=1"></script>
-<script src="js/screens/inicio.js?v=1"></script>
-<script src="js/screens/mascota.js?v=1"></script>
-<script src="js/screens/actividad.js?v=1"></script>
-<script src="js/screens/material.js?v=1"></script>
-<script src="js/screens/juego.js?v=1"></script>
-<script src="js/screens/resultados.js?v=1"></script>
-<script src="js/app.js?v=1"></script>
+<script src="js/supabaseClient.js?v=2"></script>
+<script src="js/router.js?v=2"></script>
+<script src="js/screens/inicio.js?v=2"></script>
+<script src="js/screens/mascota.js?v=2"></script>
+<script src="js/screens/actividad.js?v=2"></script>
+<script src="js/screens/material.js?v=2"></script>
+<script src="js/screens/juego.js?v=2"></script>
+<script src="js/screens/resultados.js?v=2"></script>
+<script src="js/app.js?v=2"></script>
 </body>
 </html>

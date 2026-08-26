@@ -386,3 +386,22 @@ function bootstrapStorage() {
   loadMindy();
   loadSession();
 }
+
+// Cierra sesion (cuenta real o invitado) y recarga limpio, listo para otra cuenta.
+// sb_ai_key NO se borra: es una preferencia del dispositivo, no de la cuenta.
+function logout() {
+  function finish() {
+    storageRemove(STORAGE_KEYS.user);
+    storageRemove(STORAGE_KEYS.mindy);
+    storageRemove(STORAGE_KEYS.session);
+    storageRemove(STORAGE_KEYS.historial);
+    try { sessionStorage.removeItem(STORAGE_KEYS.user); } catch(e) {}
+    location.reload();
+  }
+  if (isSupabaseUser()) {
+    try { supabase.auth.signOut().catch(function(){}).then(finish); }
+    catch(e) { finish(); }
+  } else {
+    finish();
+  }
+}

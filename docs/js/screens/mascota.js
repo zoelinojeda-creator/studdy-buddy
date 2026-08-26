@@ -92,6 +92,9 @@ SCREENS.mascota = (function() {
   return {
     init: function() { expireStreakIfBroken(); renderAll(); renderHist(); startHunger(); },
     destroy: function() { stopHunger(); applyHungerDecay(); saveMindy(); },
+    confirmLogout: function() {
+      if (confirm('Cerrar sesion?')) logout();
+    },
     poke: function() {
       var m = document.getElementById('msvg'); if (!m) return;
       m.style.animation = 'scare .5s ease';
