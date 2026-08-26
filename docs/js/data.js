@@ -26,12 +26,18 @@ var OUTFIT_ITEMS = [
   {id:'bow',     ico:'&#x1F380;', name:'Mono',      price:40},
   {id:'cape',    ico:'&#x1F9B8;', name:'Capa',      price:120}
 ];
-var GOAL_MS = {casual:90000, normal:40000, intenso:20000, extremo:8000};
+// Duracion total (ms) para que, sin alimentar a Mindy, el hambre baje de 100 a ~0
+var GOAL_MS = {
+  casual:  24 * 60 * 60 * 1000,
+  normal:  6  * 60 * 60 * 1000,
+  intenso: 2  * 60 * 60 * 1000,
+  extremo: 20 * 60 * 1000
+};
 var GOAL_HINT = {
-  casual:  'Relajado — hambre baja cada 90 seg',
-  normal:  'Equilibrado — hambre baja cada 40 seg',
-  intenso: 'Desafiante — hambre baja cada 20 seg',
-  extremo: 'Extremo — hambre baja cada 8 seg'
+  casual:  'Relajado — sin comer, Mindy estara muy hambrienta en 24 horas',
+  normal:  'Equilibrado — sin comer, Mindy estara muy hambrienta en 6 horas',
+  intenso: 'Desafiante — sin comer, Mindy estara muy hambrienta en 2 horas',
+  extremo: 'Extremo — sin comer, Mindy estara muy hambrienta en 20 minutos'
 };
 var METHOD_LABEL = {
   flash:'&#x1F0CF; Flashcards',

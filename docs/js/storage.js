@@ -22,6 +22,11 @@ function storageRemove(key) {
   try { localStorage.removeItem(key); } catch(e) {}
 }
 
+// Usuario real de Supabase (no invitado): tiene id de auth y no tiene el flag guest
+function isSupabaseUser() {
+  return !!(APP.user && !APP.user.guest && APP.user.id);
+}
+
 function migrateLegacyStorage() {
   var mindy = null;
 
@@ -84,9 +89,23 @@ function saveUser() {
   if (!APP.user) return;
   if (APP.user.guest) {
     try { sessionStorage.setItem(STORAGE_KEYS.user, JSON.stringify(APP.user)); } catch(e) {}
-  } else {
-    storageSet(STORAGE_KEYS.user, JSON.stringify(APP.user));
+    return;
   }
+  // Respaldo local, siempre, sin importar si Supabase funciona o no
+  storageSet(STORAGE_KEYS.user, JSON.stringify(APP.user));
+  if (!isSupabaseUser()) return;
+  try {
+    supabase.from('usuarios').update({
+      username: APP.user.username,
+      avatar: APP.user.avatar,
+      xp: APP.user.xp,
+      level: APP.user.level,
+      sessions: APP.user.sessions,
+      streak: APP.user.streak
+    }).eq('id', APP.user.id).then(function(res) {
+      if (res.error) console.warn('[Supabase] usuarios.update fallo:', res.error.message);
+    });
+  } catch(e) { console.warn('[Supabase] usuarios.update excepcion:', e); }
 }
 
 function ownsOutfit(id) {
@@ -108,7 +127,7 @@ function normalizeOwnedOutfits() {
   return changed;
 }
 
-function hungerIntervalMs() {
+function hungerDurationMs() {
   return GOAL_MS[APP.mindy.goal] || GOAL_MS.normal;
 }
 
@@ -121,11 +140,13 @@ function applyHungerDecay() {
     saveMindy();
     return false;
   }
-  var step = hungerIntervalMs();
-  if (!step) return false;
-  var ticks = (now - last) / step;
-  if (ticks <= 0) return false;
-  APP.mindy.hunger = Math.max(0, APP.mindy.hunger - ticks);
+  var elapsed = now - last;
+  if (elapsed <= 0) return false;
+  var duration = hungerDurationMs();
+  if (!duration) return false;
+  // baja proporcional al tiempo real transcurrido / duracion total de la meta
+  var drop = (elapsed / duration) * 100;
+  APP.mindy.hunger = Math.max(0, APP.mindy.hunger - drop);
   APP.mindy.lastHungerAt = now;
   saveMindy();
   return true;
@@ -152,8 +173,66 @@ function loadMindy() {
   else saveMindy();
 }
 
+// Igual a la duracion de la meta Extremo (la mas exigente): evita pegarle a Supabase
+// cada segundo mientras el timer de hambre corre en la pantalla mascota.
+var MINDY_SYNC_INTERVAL_MS = 20 * 60 * 1000;
+var _mindySyncTimer = null;
+var _mindyDirty = false;
+
+function syncMindyToSupabase() {
+  if (!isSupabaseUser() || !_mindyDirty) return;
+  _mindyDirty = false;
+  try {
+    supabase.from('mascota_estado').upsert({
+      user_id: APP.user.id,
+      hunger: APP.mindy.hunger,
+      outfit: APP.mindy.outfit,
+      daily_goal: APP.mindy.goal,
+      owned_outfits: APP.mindy.ownedOutfits
+    }, { onConflict: 'user_id' }).then(function(res) {
+      if (res.error) console.warn('[Supabase] mascota_estado.upsert fallo:', res.error.message);
+    });
+  } catch(e) { console.warn('[Supabase] mascota_estado.upsert excepcion:', e); }
+}
+
+function scheduleMindySync() {
+  if (!isSupabaseUser()) return;
+  _mindyDirty = true;
+  if (_mindySyncTimer) return; // ya hay una sincronizacion programada, la dejamos correr
+  _mindySyncTimer = setTimeout(function() {
+    _mindySyncTimer = null;
+    syncMindyToSupabase();
+  }, MINDY_SYNC_INTERVAL_MS);
+}
+
+// Sincronizacion inmediata, sin esperar el throttle — usar al salir de la pantalla mascota.
+function flushMindySync() {
+  if (_mindySyncTimer) { clearTimeout(_mindySyncTimer); _mindySyncTimer = null; }
+  syncMindyToSupabase();
+}
+
+function fetchMindyFromSupabase() {
+  if (!isSupabaseUser()) return Promise.resolve(false);
+  return supabase.from('mascota_estado').select('*').eq('user_id', APP.user.id).single()
+    .then(function(res) {
+      if (res.error || !res.data) return false;
+      var row = res.data;
+      APP.mindy.hunger = row.hunger != null ? row.hunger : APP.mindy.hunger;
+      APP.mindy.outfit = row.outfit || APP.mindy.outfit;
+      APP.mindy.goal = row.daily_goal || APP.mindy.goal;
+      APP.mindy.ownedOutfits = Array.isArray(row.owned_outfits) ? row.owned_outfits : APP.mindy.ownedOutfits;
+      APP.mindy.lastHungerAt = Date.now();
+      normalizeOwnedOutfits();
+      saveMindy();
+      return true;
+    })
+    .catch(function(e) { console.warn('[Supabase] mascota_estado.select excepcion:', e); return false; });
+}
+
 function saveMindy() {
+  // Respaldo local, siempre, sin importar si Supabase funciona o no
   storageSet(STORAGE_KEYS.mindy, JSON.stringify(APP.mindy));
+  scheduleMindySync();
 }
 
 function loadSession() {
@@ -181,7 +260,23 @@ function addHistorialEntry(entry) {
   var hist = getHistorial();
   hist.unshift(entry);
   if (hist.length > 10) hist = hist.slice(0, 10);
+  // Respaldo local, siempre, sin importar si Supabase funciona o no
   storageSet(STORAGE_KEYS.historial, JSON.stringify(hist));
+
+  if (!isSupabaseUser()) return;
+  try {
+    supabase.from('historial').insert({
+      user_id: APP.user.id,
+      materia: entry.materia,
+      tema: entry.tema,
+      actividad: entry.actividad,
+      fecha: entry.fecha,
+      porcentaje: entry.porcentaje,
+      xp: entry.xp
+    }).then(function(res) {
+      if (res.error) console.warn('[Supabase] historial.insert fallo:', res.error.message);
+    });
+  } catch(e) { console.warn('[Supabase] historial.insert excepcion:', e); }
 }
 
 function clearHistorial() {

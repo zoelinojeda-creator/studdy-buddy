@@ -117,7 +117,9 @@ SCREENS.inicio = (function() {
               APP.user.sessions = (APP.user.sessions || 0) + 1;
               saveUser();
               loadMindy();
-              showScreen('mascota');
+              return fetchMindyFromSupabase().catch(function(){}).then(function() {
+                showScreen('mascota');
+              });
             });
         })
         .catch(function(err) { toast('Error al iniciar sesion'); });
@@ -148,7 +150,9 @@ SCREENS.inicio = (function() {
               APP.user = row.data;
               saveUser();
               loadMindy();
-              showScreen('mascota');
+              return fetchMindyFromSupabase().catch(function(){}).then(function() {
+                showScreen('mascota');
+              });
             });
         })
         .catch(function(err) { toast('Error al registrarse'); });
