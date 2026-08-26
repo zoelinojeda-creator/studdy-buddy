@@ -229,6 +229,40 @@ function fetchMindyFromSupabase() {
     .catch(function(e) { console.warn('[Supabase] mascota_estado.select excepcion:', e); return false; });
 }
 
+// Mismo formato "DD/MM/YYYY HH:mm" que arma addHistorialEntry() para las entradas locales,
+// para que el historial se vea igual sin importar si la fila vino de Supabase o de esta sesion.
+function formatHistorialFecha(isoString) {
+  var d = new Date(isoString);
+  if (isNaN(d.getTime())) return isoString || '';
+  var pad = function(n) { return String(n).padStart(2, '0'); };
+  return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+
+function fetchHistorialFromSupabase() {
+  if (!isSupabaseUser()) return Promise.resolve(false);
+  return supabase.from('historial')
+    .select('*')
+    .eq('user_id', APP.user.id)
+    .order('fecha', { ascending: false })
+    .limit(10)
+    .then(function(res) {
+      if (res.error || !Array.isArray(res.data)) return false;
+      var hist = res.data.map(function(row) {
+        return {
+          materia: row.materia,
+          tema: row.tema,
+          actividad: row.actividad,
+          fecha: formatHistorialFecha(row.fecha),
+          porcentaje: row.porcentaje,
+          xp: row.xp
+        };
+      });
+      storageSet(STORAGE_KEYS.historial, JSON.stringify(hist));
+      return true;
+    })
+    .catch(function(e) { console.warn('[Supabase] historial.select excepcion:', e); return false; });
+}
+
 function saveMindy() {
   // Respaldo local, siempre, sin importar si Supabase funciona o no
   storageSet(STORAGE_KEYS.mindy, JSON.stringify(APP.mindy));

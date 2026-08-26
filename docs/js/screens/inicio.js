@@ -117,7 +117,10 @@ SCREENS.inicio = (function() {
               APP.user.sessions = (APP.user.sessions || 0) + 1;
               saveUser();
               loadMindy();
-              return fetchMindyFromSupabase().catch(function(){}).then(function() {
+              return Promise.all([
+                fetchMindyFromSupabase().catch(function(){}),
+                fetchHistorialFromSupabase().catch(function(){})
+              ]).then(function() {
                 showScreen('mascota');
               });
             });
@@ -150,7 +153,10 @@ SCREENS.inicio = (function() {
               APP.user = row.data;
               saveUser();
               loadMindy();
-              return fetchMindyFromSupabase().catch(function(){}).then(function() {
+              return Promise.all([
+                fetchMindyFromSupabase().catch(function(){}),
+                fetchHistorialFromSupabase().catch(function(){})
+              ]).then(function() {
                 showScreen('mascota');
               });
             });
