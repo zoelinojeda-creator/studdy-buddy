@@ -185,7 +185,7 @@ function syncMindyToSupabase() {
   try {
     supabase.from('mascota_estado').upsert({
       user_id: APP.user.id,
-      hunger: APP.mindy.hunger,
+      hunger: Math.round(APP.mindy.hunger),
       outfit: APP.mindy.outfit,
       daily_goal: APP.mindy.goal,
       owned_outfits: APP.mindy.ownedOutfits
