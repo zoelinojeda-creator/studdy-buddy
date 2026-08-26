@@ -304,7 +304,6 @@ function addHistorialEntry(entry) {
       materia: entry.materia,
       tema: entry.tema,
       actividad: entry.actividad,
-      fecha: entry.fecha,
       porcentaje: entry.porcentaje,
       xp: entry.xp
     }).then(function(res) {
