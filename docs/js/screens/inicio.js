@@ -103,21 +103,24 @@ SCREENS.inicio = (function() {
     },
     doLogin: function(e) {
       e.preventDefault();
-      var u = document.getElementById('lUser').value.trim();
-      var p = document.getElementById('lPass').value;
-      if (!u || !p) { toast('Completa todos los campos'); return; }
-      try {
-        var stored = getRegisteredUser();
-        if ((stored.username === u || stored.email === u) && stored.pass === p) {
-          APP.user = stored;
-          APP.user.sessions = (APP.user.sessions || 0) + 1;
-          saveUser();
-          loadMindy();
-          showScreen('mascota');
-          return;
-        }
-        toast('Usuario o contrasena incorrectos');
-      } catch(err) { toast('Error al iniciar sesion'); }
+      var email = document.getElementById('lEmail').value.trim();
+      var pass  = document.getElementById('lPass').value;
+      if (!email || !pass) { toast('Completa todos los campos'); return; }
+      supabase.auth.signInWithPassword({ email: email, password: pass })
+        .then(function(res) {
+          if (res.error) { toast(res.error.message || 'Correo o contrasena incorrectos'); return; }
+          var authUser = res.data.user;
+          return supabase.from('usuarios').select('*').eq('id', authUser.id).single()
+            .then(function(row) {
+              if (row.error || !row.data) { toast('No se encontro el perfil de usuario'); return; }
+              APP.user = row.data;
+              APP.user.sessions = (APP.user.sessions || 0) + 1;
+              saveUser();
+              loadMindy();
+              showScreen('mascota');
+            });
+        })
+        .catch(function(err) { toast('Error al iniciar sesion'); });
     },
     doReg: function(e) {
       e.preventDefault();
@@ -126,10 +129,29 @@ SCREENS.inicio = (function() {
       var pass  = document.getElementById('rPass').value;
       if (!user || !email || !pass) { toast('Completa todos los campos'); return; }
       if (pass.length < 6) { toast('Contrasena: minimo 6 caracteres'); return; }
-      APP.user = {username:user, avatar:_selAv, email:email, pass:pass, xp:0, level:1, sessions:1, streak:0};
-      saveUser();
-      loadMindy();
-      showScreen('mascota');
+      supabase.auth.signUp({
+        email: email,
+        password: pass,
+        options: { data: { username: user, avatar: _selAv } }
+      })
+        .then(function(res) {
+          if (res.error) { toast(res.error.message || 'No se pudo crear la cuenta'); return; }
+          var authUser = res.data && res.data.user;
+          if (!authUser) { toast('No se pudo crear la cuenta'); return; }
+          if (!res.data.session) {
+            toast('Cuenta creada. Revisa tu correo para confirmarla y luego inicia sesion');
+            return;
+          }
+          return supabase.from('usuarios').select('*').eq('id', authUser.id).single()
+            .then(function(row) {
+              if (row.error || !row.data) { toast('Cuenta creada, pero no se encontro el perfil'); return; }
+              APP.user = row.data;
+              saveUser();
+              loadMindy();
+              showScreen('mascota');
+            });
+        })
+        .catch(function(err) { toast('Error al registrarse'); });
     },
     doGuest: function() {
       APP.user = {username:'Invitado', avatar:'invitado', xp:0, level:1, sessions:1, streak:0, guest:true};

@@ -44,20 +44,36 @@
       </div>
       <!-- LOGIN -->
       <div class="form-panel on" id="pLogin">
-        <div style="text-align:center;padding:22px 6px;">
-          <div style="font-size:2.4rem;line-height:1;">&#x1F6A7;</div>
-          <div style="font-weight:800;margin-top:10px;">Inicio de sesion &mdash; Proximamente...</div>
-          <div style="font-size:.78rem;color:var(--muted);margin-top:6px;">Por ahora se puede entrar como invitado</div>
-        </div>
+        <form onsubmit="SCREENS.inicio.doLogin(event)">
+          <div class="fg"><label>Correo</label><span class="inp-ico">&#128100;</span><input class="inp-field" id="lEmail" type="email" placeholder="tu@correo.com" autocomplete="username"></div>
+          <div class="fg"><label>Contrasena</label><span class="inp-ico">&#128274;</span><input class="inp-field" id="lPass" type="password" placeholder="&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;" autocomplete="current-password"></div>
+          <button type="submit" class="btn-gold" onclick="ripple(this,event)">Entrar &#x1F680;</button>
+        </form>
         <button class="btn-ghost" onclick="SCREENS.inicio.doGuest()">&#x1F47B; Entrar como invitado</button>
       </div>
       <!-- REGISTRO -->
       <div class="form-panel" id="pReg">
-        <div style="text-align:center;padding:22px 6px;">
-          <div style="font-size:2.4rem;line-height:1;">&#x1F6A7;</div>
-          <div style="font-weight:800;margin-top:10px;">Registro de cuenta &mdash; Proximamente...</div>
-          <div style="font-size:.78rem;color:var(--muted);margin-top:6px;">Por ahora se puede entrar como invitado</div>
+        <div style="text-align:center;margin-bottom:10px;">
+          <div style="font-size:.78rem;color:var(--muted);margin-bottom:7px;font-weight:700;">Elige tu avatar</div>
+          <div class="avatars">
+            <span class="av on" onclick="SCREENS.inicio.selAv(this,'huevo')">&#x1F423;</span>
+            <span class="av" onclick="SCREENS.inicio.selAv(this,'zorro')">&#x1F98A;</span>
+            <span class="av" onclick="SCREENS.inicio.selAv(this,'rana')">&#x1F438;</span>
+            <span class="av" onclick="SCREENS.inicio.selAv(this,'pulpo')">&#x1F419;</span>
+            <span class="av" onclick="SCREENS.inicio.selAv(this,'mariposa')">&#x1F98B;</span>
+          </div>
         </div>
+        <form onsubmit="SCREENS.inicio.doReg(event)">
+          <div class="fg"><label>Usuario</label><span class="inp-ico">&#128100;</span><input class="inp-field" id="rUser" type="text" placeholder="Estudiante123" autocomplete="username"></div>
+          <div class="fg"><label>Correo</label><span class="inp-ico">&#128231;</span><input class="inp-field" id="rEmail" type="email" placeholder="tu@correo.com" autocomplete="email"></div>
+          <div class="fg">
+            <label>Contrasena</label><span class="inp-ico">&#128274;</span>
+            <input class="inp-field" id="rPass" type="password" placeholder="Minimo 6 caracteres" autocomplete="new-password" oninput="SCREENS.inicio.pwStr(this.value)">
+            <div class="pw-track" id="pwTrack"></div>
+            <div class="pw-lbl" id="pwLbl">Ingresa una contrasena</div>
+          </div>
+          <button type="submit" class="btn-gold" onclick="ripple(this,event)">Crear cuenta &#x1F389;</button>
+        </form>
         <button class="btn-ghost" onclick="SCREENS.inicio.doGuest()">&#x1F47B; Entrar como invitado</button>
       </div>
       <div class="auth-foot" id="authFoot">No tienes cuenta? <a onclick="SCREENS.inicio.switchTab('reg')">Registrate gratis</a></div>
@@ -304,6 +320,8 @@
 <script src="js/utils.js"></script>
 <script src="js/storage.js"></script>
 <script src="js/ai.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabaseClient.js"></script>
 <script src="js/router.js"></script>
 <script src="js/screens/inicio.js"></script>
 <script src="js/screens/mascota.js"></script>
