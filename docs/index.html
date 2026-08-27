@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.js.iife.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.css">
-<link rel="stylesheet" href="css/app.css?v=7">
+<link rel="stylesheet" href="css/app.css?v=8">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cellipse cx='16' cy='17' rx='13' ry='14' fill='%232d7a3a'/%3E%3Cellipse cx='16' cy='16' rx='11' ry='12' fill='%233a9a4a'/%3E%3Ccircle cx='16' cy='15' r='6' fill='%231a1a2e'/%3E%3Ccircle cx='16' cy='15' r='2.7' fill='white'/%3E%3Ccircle cx='17.6' cy='13.4' r='1' fill='white' opacity='.8'/%3E%3Cpolyline points='10,23 12,21 14,23 16,21 18,23 20,21 22,23' stroke='%231a1a2e' stroke-width='1.4' fill='none' stroke-linejoin='round'/%3E%3C/svg%3E">
 </head>
 <body>
@@ -247,7 +247,7 @@
   </nav>
   <div class="mat-content">
     <div class="method-pill" id="matPill">&#x1F0CF; Flashcards</div>
-    <div class="section-box">
+    <div class="section-box" id="stepMateriaTema">
       <div class="sec-title">Paso 1 — Tema</div>
       <input class="inp-plain" id="inpSubj" placeholder="Materia (ej: Historia)" oninput="SCREENS.material.calcProg()">
       <input class="inp-plain" id="inpTopic" placeholder="Tema especifico (ej: Revolucion Francesa)" oninput="SCREENS.material.calcProg()" style="margin-bottom:0;">
@@ -275,9 +275,10 @@
       <div class="sec-title">Proximas mejoras — Apuntes y TXT</div>
       <p class="sec-hint">En esta prueba de concepto la IA genera solo con materia y tema, para no gastar tantos tokens. Pegar apuntes o cargar un .txt para contextualizar las preguntas queda para mas adelante.</p>
     </div>
-    <div class="section-box">
+    <div class="section-box" id="stepGeminiKey">
       <div class="sec-title">Opcional — Clave de Gemini</div>
       <input class="inp-plain" id="inpAiKey" type="text" autocomplete="off" placeholder="Si no hay clave, se usan preguntas de demo" style="margin-bottom:0;" oninput="SCREENS.material.saveKey(this.value)" onchange="SCREENS.material.saveKey(this.value)">
+      <a onclick="SCREENS.material.openGeminiHelp()" style="display:inline-block;margin-top:6px;font-size:.78rem;color:var(--accent);cursor:pointer;">&#x2753; Como consigo una clave gratis?</a>
     </div>
     <div class="section-box" id="genErrorOv" style="border-color:var(--accent2);text-align:center;">
       <div style="font-size:2.2rem;line-height:1;color:var(--accent2);">&#x26A0;&#xFE0F;</div>
@@ -304,6 +305,25 @@
         <li id="st3"><div class="step-dot">4</div>Casi listo!</li>
       </ul>
     </div>
+  </div>
+</div>
+
+<!-- MODAL AYUDA CLAVE GEMINI -->
+<div class="modal-ov" id="geminiHelpModal" onclick="SCREENS.material.closeGeminiHelpOv(event)">
+  <div class="shop-sheet">
+    <div class="sh-head">
+      <div class="sh-title">Como conseguir tu clave gratis</div>
+      <button class="sh-close" onclick="SCREENS.material.closeGeminiHelp()">&#x2715;</button>
+    </div>
+    <ol style="padding-left:20px;font-size:.88rem;line-height:1.6;">
+      <li>Entra a <a href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener" style="color:var(--accent);">aistudio.google.com/api-keys</a> e inicia sesion con tu cuenta de Google.</li>
+      <li>Toca el boton "Create API key" / "Crear clave de API".</li>
+      <li>Ponele un nombre a la clave (podes dejar el que sugiere por defecto).</li>
+      <li>Elegi el proyecto de Gemini por defecto (no hace falta crear uno nuevo la primera vez).</li>
+      <li>Toca "Create key" para generarla.</li>
+      <li>Copia la clave y pegala en el campo de arriba.</li>
+    </ol>
+    <p style="font-size:.76rem;color:var(--muted);margin-top:10px;">Es gratis, pero tiene un limite de usos por dia — para la expo alcanza de sobra.</p>
   </div>
 </div>
 
@@ -348,20 +368,20 @@
   </div>
 </div>
 
-<script src="js/data.js?v=7"></script>
-<script src="js/utils.js?v=7"></script>
-<script src="js/storage.js?v=7"></script>
-<script src="js/ai.js?v=7"></script>
+<script src="js/data.js?v=8"></script>
+<script src="js/utils.js?v=8"></script>
+<script src="js/storage.js?v=8"></script>
+<script src="js/ai.js?v=8"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabaseClient.js?v=7"></script>
-<script src="js/router.js?v=7"></script>
+<script src="js/supabaseClient.js?v=8"></script>
+<script src="js/router.js?v=8"></script>
 <script src="js/tutorial.js?v=1"></script>
-<script src="js/screens/inicio.js?v=7"></script>
-<script src="js/screens/mascota.js?v=7"></script>
-<script src="js/screens/actividad.js?v=7"></script>
-<script src="js/screens/material.js?v=7"></script>
-<script src="js/screens/juego.js?v=7"></script>
-<script src="js/screens/resultados.js?v=7"></script>
-<script src="js/app.js?v=7"></script>
+<script src="js/screens/inicio.js?v=8"></script>
+<script src="js/screens/mascota.js?v=8"></script>
+<script src="js/screens/actividad.js?v=8"></script>
+<script src="js/screens/material.js?v=8"></script>
+<script src="js/screens/juego.js?v=8"></script>
+<script src="js/screens/resultados.js?v=8"></script>
+<script src="js/app.js?v=8"></script>
 </body>
 </html>

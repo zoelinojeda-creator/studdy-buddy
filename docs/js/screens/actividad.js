@@ -1,4 +1,21 @@
 // ─── ACTIVIDAD ───
+TOUR_STEPS.actividad = [
+  {
+    element: '.method-grid',
+    popover: {
+      title: 'Elegi como estudiar',
+      description: 'Cada metodo genera preguntas distinto — probalos y quedate con el que mas te guste.'
+    }
+  },
+  {
+    element: '#btnCont',
+    popover: {
+      title: 'Segui adelante',
+      description: 'Una vez que elegis un metodo, toca aca para cargar la materia y el tema.'
+    }
+  }
+];
+
 SCREENS.actividad = {
   init: function() {
     try { document.getElementById('actXP').textContent = APP.user ? APP.user.xp : 0; } catch(e) {}
@@ -14,6 +31,7 @@ SCREENS.actividad = {
       for (var i = 0; i < cards2.length; i++) cards2[i].classList.remove('on');
       var bc2 = document.getElementById('btnCont'); if (bc2) bc2.classList.remove('on');
     }
+    runTutorial('actividad');
   },
   destroy: function() {},
   pick: function(el, method) {

@@ -1,4 +1,42 @@
 // ─── MATERIAL ───
+TOUR_STEPS.material = [
+  {
+    element: '#stepMateriaTema',
+    popover: {
+      title: 'Materia y tema',
+      description: 'Escribi sobre que queres practicar. Cuanto mas especifico el tema, mejores preguntas genera la IA.'
+    }
+  },
+  {
+    element: '#chipsRow',
+    popover: {
+      title: 'Atajos rapidos',
+      description: 'Toca una de estas para completar la materia sin escribir.'
+    }
+  },
+  {
+    element: '.qty-row',
+    popover: {
+      title: 'Cuantas preguntas',
+      description: 'Elegi entre 5 y 20 — mas preguntas, mas XP si las acertas todas.'
+    }
+  },
+  {
+    element: '#stepGeminiKey',
+    popover: {
+      title: 'Tu clave de Gemini (opcional)',
+      description: 'No es obligatoria — sin clave se usa la IA compartida de StudyBuddy. Si queres la tuya, toca el boton de ayuda de al lado para conseguir una gratis.'
+    }
+  },
+  {
+    element: '#btnGen',
+    popover: {
+      title: 'Listo para generar',
+      description: 'Con materia y tema completos, toca aca y Mindy arma tu actividad.'
+    }
+  }
+];
+
 SCREENS.material = (function() {
   var _stepTimer = null;
 
@@ -42,7 +80,15 @@ SCREENS.material = (function() {
       try { var ak = document.getElementById('inpAiKey'); if (ak) ak.value = getAiKey(); } catch(e) {}
       this.renderCount();
       this.calcProg();
+      runTutorial('material');
     },
+    openGeminiHelp: function() {
+      var m = document.getElementById('geminiHelpModal'); if (m) m.classList.add('open');
+    },
+    closeGeminiHelp: function() {
+      var m = document.getElementById('geminiHelpModal'); if (m) m.classList.remove('open');
+    },
+    closeGeminiHelpOv: function(e) { if (e.target === document.getElementById('geminiHelpModal')) this.closeGeminiHelp(); },
     saveKey: function(value) {
       saveAiKey(value);
     },
