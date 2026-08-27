@@ -145,6 +145,7 @@ SCREENS.mascota = (function() {
       if (confirm('Cerrar sesion?')) logout();
     },
     restartTutorial: function() {
+      _tourStarted = false;
       resetAllTutorials();
       showScreen('inicio');
     },
