@@ -302,4 +302,17 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
 .hist-xp{font-size:.7rem;color:var(--accent);margin-top:1px;}
 .hist-empty{text-align:center;color:var(--muted);font-size:.84rem;padding:14px 0;}
 .hist-clear{width:100%;margin-top:8px;padding:8px;background:transparent;border:1.5px solid var(--border);color:var(--muted);border-radius:9px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.77rem;transition:all .2s;}
+
+/* ── TUTORIAL (driver.js) — paleta de la app ── */
+.driver-popover{background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:16px;font-family:'Nunito',sans-serif;}
+.driver-popover-title{font-family:'Fredoka One',cursive;color:var(--accent);font-size:1.05rem;}
+.driver-popover-description{color:var(--text);font-size:.88rem;line-height:1.45;}
+.driver-popover-progress-text{color:var(--muted);font-size:.75rem;}
+.driver-popover-footer button{background:var(--accent);color:#1a1200;border:none;border-radius:10px;font-family:'Nunito',sans-serif;font-weight:700;text-shadow:none;padding:7px 14px;}
+.driver-popover-footer button:hover{background:var(--accent);opacity:.88;}
+.driver-popover-close-btn{color:var(--muted);}
+.driver-popover-arrow-side-top.driver-popover-arrow{border-top-color:var(--panel);}
+.driver-popover-arrow-side-bottom.driver-popover-arrow{border-bottom-color:var(--panel);}
+.driver-popover-arrow-side-left.driver-popover-arrow{border-left-color:var(--panel);}
+.driver-popover-arrow-side-right.driver-popover-arrow{border-right-color:var(--panel);}
 .hist-clear:hover{border-color:var(--accent2);color:var(--accent2);}

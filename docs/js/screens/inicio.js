@@ -1,4 +1,28 @@
 // ─── INICIO ───
+TOUR_STEPS.inicio = [
+  {
+    element: '.logo-area',
+    popover: {
+      title: 'Hola! Soy Mindy',
+      description: 'Te voy a acompanar a estudiar y subir de nivel. Toca mi carita si queres saludarme!'
+    }
+  },
+  {
+    element: '.tabs',
+    popover: {
+      title: 'Entrar o registrarte',
+      description: 'Desde aca elegis si ya tenes cuenta (Entrar) o si es tu primera vez (Registro).'
+    }
+  },
+  {
+    element: '#btnGuestLogin',
+    popover: {
+      title: 'Probar sin cuenta',
+      description: 'La forma mas rapida de arrancar: entras como invitado y jugas ya mismo, sin cargar nada.'
+    }
+  }
+];
+
 SCREENS.inicio = (function() {
   var _raf = null;
   var _running = false;
@@ -83,6 +107,7 @@ SCREENS.inicio = (function() {
         return;
       }
       startCanvas();
+      runTutorial('inicio');
     },
     destroy: function() { stopCanvas(); },
     switchTab: function(t) {
