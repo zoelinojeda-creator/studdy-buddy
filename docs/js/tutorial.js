@@ -17,7 +17,9 @@ function runTutorial(screenName) {
       showProgress: true,
       steps: steps,
       onDestroyed: function() {
+        console.log('[Tutorial] onDestroyed disparado para "' + screenName + '", guardando ' + seenKey);
         storageSet(seenKey, '1');
+        console.log('[Tutorial] guardado. Valor releido:', storageGet(seenKey));
       }
     });
     driverObj.drive();
