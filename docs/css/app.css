@@ -320,7 +320,6 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
 /* ── DESKTOP (>=768px) — solo ancho y columnas extra, nada de mobile se toca ── */
 @media (min-width: 768px) {
   .login-wrap{max-width:460px;}
-  .pet-content{max-width:none;width:90%;}
   .method-page{max-width:720px;}
   .mat-content{max-width:720px;}
   .juego-body{max-width:720px;}
@@ -330,17 +329,31 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
   .goals-grid{grid-template-columns:repeat(4,1fr);}
   .sh-grid{grid-template-columns:repeat(5,1fr);}
 
-  /* #mascota — grid de 2 columnas, solo con los hijos de .pet-content. .arena y el banner chico quedan full-width arriba, sin cambios. */
-  .pet-content{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:16px;
-    align-content:start;
+  /* #mascota — grid de 2 columnas (Mindy/.arena incluida) + una fila final con 2 sub-columnas. */
+  #mascota{
+    display:grid !important;
+    grid-template-columns: 0.9fr 1.05fr 1.05fr;
+    grid-template-areas:
+      "topbar   topbar  topbar"
+      "mindy    goals   goals"
+      "xp       goals   goals"
+      "stats    acts    acts"
+      "adchico  adbig   hist"
+      ".        igcard  hist";
+    column-gap:16px;
+    row-gap:16px;
+    padding:0 5%;
   }
-  .pet-content > .xp-row{grid-column:1;}
-  .pet-content > .stats-row{grid-column:1;}
-  .pet-content > .section-box{grid-column:2;}
-  .pet-content > .act-grid{grid-column:2;}
-  .pet-content > .hist-section{grid-column:2;}
-  #igCard, #adBig, #petSpacer{grid-column:1 / -1;}
+  .topbar{grid-area:topbar;}
+  .arena{grid-area:mindy;}
+  .pet-content{display:contents;}
+  .pet-content > .xp-row{grid-area:xp;}
+  .pet-content > .stats-row{grid-area:stats;}
+  .pet-content > .section-box{grid-area:goals;}
+  .pet-content > .act-grid{grid-area:acts;}
+  .pet-content > .hist-section{grid-area:hist;}
+  #adChico{grid-area:adchico;}
+  #adBig{grid-area:adbig;}
+  #igCard{grid-area:igcard;}
+  #petSpacer{display:none;}
 }
