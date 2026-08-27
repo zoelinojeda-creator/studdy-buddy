@@ -396,6 +396,7 @@ function logout() {
     storageRemove(STORAGE_KEYS.session);
     storageRemove(STORAGE_KEYS.historial);
     try { sessionStorage.removeItem(STORAGE_KEYS.user); } catch(e) {}
+    if (typeof resetAllTutorials === 'function') resetAllTutorials();
     location.reload();
   }
   if (isSupabaseUser()) {
