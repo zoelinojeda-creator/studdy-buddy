@@ -334,12 +334,12 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
     display:grid !important;
     grid-template-columns: 8% 1.1fr 1.05fr 0.85fr 8%;
     grid-template-areas:
-      "topbar   topbar   topbar  topbar  topbar"
-      ".        mindy    goals   goals   ."
-      ".        xp       goals   goals   ."
-      ".        stats    acts    acts    ."
-      ".        adchico  adbig   hist    ."
-      ".        adchico  igcard  hist    .";
+      "topbar   topbar    topbar   topbar   topbar"
+      ".        mindy     rightTop rightTop ."
+      ".        xp        rightTop rightTop ."
+      ".        stats     rightTop rightTop ."
+      ".        adchico   adbig    hist     ."
+      ".        adchico   igcard   hist     .";
     column-gap:16px;
     row-gap:16px;
   }
@@ -348,12 +348,11 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
   .pet-content{display:contents;}
   .pet-content > .xp-row{grid-area:xp;}
   .pet-content > .stats-row{grid-area:stats;}
-  .pet-content > .section-box{grid-area:goals;align-self:start;}
-  .pet-content > .act-grid{grid-area:acts;}
-  .pet-content > .hist-section{grid-area:hist;height:400px;overflow-y:auto;}
+  #rightTop{grid-area:rightTop;align-self:start;}
+  .pet-content > .hist-section{grid-area:hist;height:330px;overflow-y:auto;}
   #adChico{grid-area:adchico;}
   #adBig{grid-area:adbig;}
   #igCard{grid-area:igcard;}
   #petSpacer{display:none;}
-  .hist-body{max-height:340px;overflow-y:auto;}
+  .hist-body{max-height:250px;overflow-y:auto;}
 }

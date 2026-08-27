@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.js.iife.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.css">
-<link rel="stylesheet" href="css/app.css?v=14">
+<link rel="stylesheet" href="css/app.css?v=15">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cellipse cx='16' cy='17' rx='13' ry='14' fill='%232d7a3a'/%3E%3Cellipse cx='16' cy='16' rx='11' ry='12' fill='%233a9a4a'/%3E%3Ccircle cx='16' cy='15' r='6' fill='%231a1a2e'/%3E%3Ccircle cx='16' cy='15' r='2.7' fill='white'/%3E%3Ccircle cx='17.6' cy='13.4' r='1' fill='white' opacity='.8'/%3E%3Cpolyline points='10,23 12,21 14,23 16,21 18,23 20,21 22,23' stroke='%231a1a2e' stroke-width='1.4' fill='none' stroke-linejoin='round'/%3E%3C/svg%3E">
 </head>
 <body>
@@ -141,20 +141,22 @@
         <div style="font-size:.7rem;color:var(--muted);margin-top:2px;">prox. nivel</div>
       </div>
     </div>
-    <div class="section-box">
-      <div style="font-family:'Fredoka One',cursive;font-size:.95rem;color:var(--accent);margin-bottom:9px;">&#127919; Meta diaria</div>
-      <div class="goals-grid">
-        <button class="g-btn" id="g-casual" onclick="SCREENS.mascota.setGoal('casual')"><span class="g-ico">&#127807;</span><span class="g-name">Casual</span><span class="g-desc">Una vez al dia</span></button>
-        <button class="g-btn on" id="g-normal" onclick="SCREENS.mascota.setGoal('normal')"><span class="g-ico">&#128218;</span><span class="g-name">Normal</span><span class="g-desc">Un rato al dia</span></button>
-        <button class="g-btn" id="g-intenso" onclick="SCREENS.mascota.setGoal('intenso')"><span class="g-ico">&#128293;</span><span class="g-name">Intenso</span><span class="g-desc">Varias veces</span></button>
-        <button class="g-btn" id="g-extremo" onclick="SCREENS.mascota.setGoal('extremo')"><span class="g-ico">&#9889;</span><span class="g-name">Extremo</span><span class="g-desc">Constante</span></button>
+    <div id="rightTop">
+      <div class="section-box">
+        <div style="font-family:'Fredoka One',cursive;font-size:.95rem;color:var(--accent);margin-bottom:9px;">&#127919; Meta diaria</div>
+        <div class="goals-grid">
+          <button class="g-btn" id="g-casual" onclick="SCREENS.mascota.setGoal('casual')"><span class="g-ico">&#127807;</span><span class="g-name">Casual</span><span class="g-desc">Una vez al dia</span></button>
+          <button class="g-btn on" id="g-normal" onclick="SCREENS.mascota.setGoal('normal')"><span class="g-ico">&#128218;</span><span class="g-name">Normal</span><span class="g-desc">Un rato al dia</span></button>
+          <button class="g-btn" id="g-intenso" onclick="SCREENS.mascota.setGoal('intenso')"><span class="g-ico">&#128293;</span><span class="g-name">Intenso</span><span class="g-desc">Varias veces</span></button>
+          <button class="g-btn" id="g-extremo" onclick="SCREENS.mascota.setGoal('extremo')"><span class="g-ico">&#9889;</span><span class="g-name">Extremo</span><span class="g-desc">Constante</span></button>
+        </div>
+        <div class="goal-hint" id="gHint">Equilibrado — hambre baja cada 40 seg</div>
       </div>
-      <div class="goal-hint" id="gHint">Equilibrado — hambre baja cada 40 seg</div>
-    </div>
-    <div class="act-grid">
-      <button class="act-btn" onclick="SCREENS.mascota.openShop('food')"><span class="act-ico">&#129366;</span>Comida</button>
-      <button class="act-btn" onclick="SCREENS.mascota.openShop('outfit')"><span class="act-ico">&#128085;</span>Ropa</button>
-      <button class="act-btn study-btn" id="studyBtn" onclick="showScreen('actividad')"><span class="act-ico">&#128218;</span><span class="study-label">Estudiar</span><span class="study-sub">Ganar XP</span></button>
+      <div class="act-grid">
+        <button class="act-btn" onclick="SCREENS.mascota.openShop('food')"><span class="act-ico">&#129366;</span>Comida</button>
+        <button class="act-btn" onclick="SCREENS.mascota.openShop('outfit')"><span class="act-ico">&#128085;</span>Ropa</button>
+        <button class="act-btn study-btn" id="studyBtn" onclick="showScreen('actividad')"><span class="act-ico">&#128218;</span><span class="study-label">Estudiar</span><span class="study-sub">Ganar XP</span></button>
+      </div>
     </div>
     <div class="stats-row">
       <div class="stat-box"><div class="stat-val" id="stSes">0</div><div class="stat-lbl">Sesiones</div></div>
@@ -368,20 +370,20 @@
   </div>
 </div>
 
-<script src="js/data.js?v=14"></script>
-<script src="js/utils.js?v=14"></script>
-<script src="js/storage.js?v=14"></script>
-<script src="js/ai.js?v=14"></script>
+<script src="js/data.js?v=15"></script>
+<script src="js/utils.js?v=15"></script>
+<script src="js/storage.js?v=15"></script>
+<script src="js/ai.js?v=15"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabaseClient.js?v=14"></script>
-<script src="js/router.js?v=14"></script>
+<script src="js/supabaseClient.js?v=15"></script>
+<script src="js/router.js?v=15"></script>
 <script src="js/tutorial.js?v=1"></script>
-<script src="js/screens/inicio.js?v=14"></script>
-<script src="js/screens/mascota.js?v=14"></script>
-<script src="js/screens/actividad.js?v=14"></script>
-<script src="js/screens/material.js?v=14"></script>
-<script src="js/screens/juego.js?v=14"></script>
-<script src="js/screens/resultados.js?v=14"></script>
-<script src="js/app.js?v=14"></script>
+<script src="js/screens/inicio.js?v=15"></script>
+<script src="js/screens/mascota.js?v=15"></script>
+<script src="js/screens/actividad.js?v=15"></script>
+<script src="js/screens/material.js?v=15"></script>
+<script src="js/screens/juego.js?v=15"></script>
+<script src="js/screens/resultados.js?v=15"></script>
+<script src="js/app.js?v=15"></script>
 </body>
 </html>
