@@ -329,4 +329,18 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
   .method-grid{grid-template-columns:repeat(4,1fr);}
   .goals-grid{grid-template-columns:repeat(4,1fr);}
   .sh-grid{grid-template-columns:repeat(5,1fr);}
+
+  /* #mascota — grid de 2 columnas, solo con los hijos de .pet-content. .arena y el banner chico quedan full-width arriba, sin cambios. */
+  .pet-content{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    align-content:start;
+  }
+  .pet-content > .xp-row{grid-column:1;}
+  .pet-content > .stats-row{grid-column:1;}
+  .pet-content > .section-box{grid-column:2;}
+  .pet-content > .act-grid{grid-column:2;}
+  .pet-content > .hist-section{grid-column:2;}
+  #igCard, #adBig, #petSpacer{grid-column:1 / -1;}
 }
