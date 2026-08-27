@@ -320,7 +320,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
 /* ── DESKTOP (>=768px) — solo ancho y columnas extra, nada de mobile se toca ── */
 @media (min-width: 768px) {
   .login-wrap{max-width:460px;}
-  .pet-content{max-width:640px;}
+  .pet-content{max-width:none;width:90%;}
   .method-page{max-width:720px;}
   .mat-content{max-width:720px;}
   .juego-body{max-width:720px;}
