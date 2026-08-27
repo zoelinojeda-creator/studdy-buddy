@@ -316,3 +316,17 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
 .driver-popover-arrow-side-left.driver-popover-arrow{border-left-color:var(--panel);}
 .driver-popover-arrow-side-right.driver-popover-arrow{border-right-color:var(--panel);}
 .hist-clear:hover{border-color:var(--accent2);color:var(--accent2);}
+
+/* ── DESKTOP (>=768px) — solo ancho y columnas extra, nada de mobile se toca ── */
+@media (min-width: 768px) {
+  .login-wrap{max-width:460px;}
+  .pet-content{max-width:640px;}
+  .method-page{max-width:720px;}
+  .mat-content{max-width:720px;}
+  .juego-body{max-width:720px;}
+  .res-card{max-width:460px;}
+
+  .method-grid{grid-template-columns:repeat(4,1fr);}
+  .goals-grid{grid-template-columns:repeat(4,1fr);}
+  .sh-grid{grid-template-columns:repeat(5,1fr);}
+}
