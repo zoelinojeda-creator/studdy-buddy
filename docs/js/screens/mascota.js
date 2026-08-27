@@ -1,6 +1,52 @@
 // ─── MASCOTA ───
+TOUR_STEPS.mascota = [
+  {
+    element: '.monster-wrap',
+    popover: {
+      title: 'Esta es Mindy',
+      description: 'Cuanto mas la cuides, mas contenta va a estar. Tocala para saludar!'
+    }
+  },
+  {
+    element: '.xp-bar-w',
+    popover: {
+      title: 'Tu progreso',
+      description: 'Ahi vas viendo tu nivel y cuanto te falta para subir.'
+    }
+  },
+  {
+    element: '.h-wrap',
+    popover: {
+      title: 'El hambre de Mindy',
+      description: 'Baja con el tiempo segun la meta que elijas. Si llega muy abajo, dale de comer!'
+    }
+  },
+  {
+    element: '.goals-grid',
+    popover: {
+      title: 'Meta diaria',
+      description: 'Elegi que tan rapido queres que baje el hambre — de Casual a Extremo.'
+    }
+  },
+  {
+    element: '.act-grid',
+    popover: {
+      title: 'Comida, Ropa y Estudiar',
+      description: 'Comprale cosas a Mindy con tu XP, o toca Estudiar para ganar mas.'
+    }
+  },
+  {
+    element: '.hist-section',
+    popover: {
+      title: 'Temas estudiados',
+      description: 'Aca queda guardado todo lo que ya practicaste.'
+    }
+  }
+];
+
 SCREENS.mascota = (function() {
   var _timer = null;
+  var _tourStarted = false;
 
   function startHunger() {
     stopHunger();
@@ -90,10 +136,17 @@ SCREENS.mascota = (function() {
   }
 
   return {
-    init: function() { expireStreakIfBroken(); renderAll(); renderHist(); startHunger(); },
+    init: function() {
+      expireStreakIfBroken(); renderAll(); renderHist(); startHunger();
+      if (!_tourStarted) { _tourStarted = true; runTutorial('mascota'); }
+    },
     destroy: function() { stopHunger(); applyHungerDecay(); saveMindy(); },
     confirmLogout: function() {
       if (confirm('Cerrar sesion?')) logout();
+    },
+    restartTutorial: function() {
+      resetAllTutorials();
+      showScreen('inicio');
     },
     poke: function() {
       var m = document.getElementById('msvg'); if (!m) return;
