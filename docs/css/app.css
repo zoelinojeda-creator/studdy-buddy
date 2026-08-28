@@ -360,7 +360,9 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
   #colLeft{grid-area:colLeft;display:flex;flex-direction:column;gap:16px;}
   #colRight{grid-area:colRight;display:flex;flex-direction:column;gap:16px;}
   #bottomRow{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch;}
-  #adStack{display:flex;flex-direction:column;justify-content:space-between;height:100%;}
+  #adStack{display:flex;flex-direction:column;height:100%;}
+  #adBig{flex-grow:1;}
+  #adChico{flex-grow:1;}
   .hist-section{height:330px;overflow-y:auto;}
   #petSpacer{display:none;}
   .hist-body{max-height:250px;overflow-y:auto;}
