@@ -90,7 +90,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
 #mascota{display:flex;flex-direction:column;}
 #colLeft, #colRight, #bottomRow, #adStack{display:contents;}
 .topbar{order:0;}
-#adChico{order:1;}
+#adChico{order:1;margin:8px 14px;}
 .arena{order:2;}
 .xp-row{order:3;}
 #rightTop{order:4;}
