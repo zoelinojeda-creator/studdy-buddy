@@ -24,7 +24,15 @@ function ripple(btn, e) {
 function floatEmoji(ico) {
   var el = document.createElement('div');
   el.innerHTML = ico;
-  el.style.cssText = 'position:fixed;left:' + ((window.innerWidth/2)-20) + 'px;top:' + (window.innerHeight/2) + 'px;font-size:2rem;z-index:400;pointer-events:none;animation:fl2 .9s ease forwards;';
+  var left = (window.innerWidth/2) - 20;
+  var top = window.innerHeight/2;
+  var mindy = document.querySelector('.monster-wrap');
+  if (mindy) {
+    var rect = mindy.getBoundingClientRect();
+    left = rect.left + rect.width/2 - 20;
+    top = rect.top + rect.height/2 - 20;
+  }
+  el.style.cssText = 'position:fixed;left:' + left + 'px;top:' + top + 'px;font-size:2rem;z-index:400;pointer-events:none;animation:fl2 .9s ease forwards;';
   document.body.appendChild(el);
   setTimeout(function(){ try{ document.body.removeChild(el); }catch(e){} }, 900);
 }
