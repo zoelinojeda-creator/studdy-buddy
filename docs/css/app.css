@@ -83,7 +83,22 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
 .auth-foot a{color:var(--accent);cursor:pointer;font-weight:700;}
 
 /* ── SCREEN: MASCOTA ── */
-#mascota{display:block;}
+/* display:flex + order en las hojas: reproduce el orden visual de mobile de hoy
+   aunque el HTML esté agrupado en #colLeft/#colRight para el layout de desktop.
+   #colLeft/#colRight/#bottomRow/#adStack son display:contents aca (invisibles
+   para el layout), asi que sus hijos actuan como items directos de #mascota. */
+#mascota{display:flex;flex-direction:column;}
+#colLeft, #colRight, #bottomRow, #adStack{display:contents;}
+.topbar{order:0;}
+#adChico{order:1;}
+.arena{order:2;}
+.xp-row{order:3;}
+#rightTop{order:4;}
+.stats-row{order:5;}
+.hist-section{order:6;}
+#igCard{order:7;}
+#adBig{order:8;}
+#petSpacer{order:9;}
 .arena{background:linear-gradient(180deg,#091409 0%,#0d0f1a 100%);min-height:288px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:18px 18px 0;position:relative;overflow:hidden;}
 .arena-floor{width:188px;height:13px;background:radial-gradient(ellipse,rgba(110,231,183,.3) 0%,transparent 70%);border-radius:50%;margin-bottom:-2px;}
 .coins-row{position:absolute;top:16px;left:50%;transform:translateX(-50%);display:flex;gap:26px;}
@@ -329,30 +344,28 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
   .goals-grid{grid-template-columns:repeat(2,1fr);}
   .sh-grid{grid-template-columns:repeat(5,1fr);}
 
-  /* #mascota — grid de 2 columnas (Mindy/.arena incluida) + una fila final con 2 sub-columnas. */
+  /* #mascota — estructura nueva y simple: topbar arriba de ancho completo,
+     despues 2 columnas independientes (#colLeft/#colRight) que se apilan
+     cada una por su cuenta, sin compartir filas de grid entre si. */
   #mascota{
     display:grid !important;
-    grid-template-columns: 8% 1.1fr 1.05fr 0.85fr 8%;
+    grid-template-columns: 8% 1.1fr 1.9fr 8%;
     grid-template-areas:
-      "topbar   topbar    topbar   topbar   topbar"
-      ".        mindy     rightTop rightTop ."
-      ".        xp        rightTop rightTop ."
-      ".        stats     rightTop rightTop ."
-      ".        adchico   adbig    hist     ."
-      ".        adchico   igcard   hist     .";
+      "topbar  topbar   topbar   topbar"
+      ".       colLeft  colRight .";
     column-gap:16px;
     row-gap:16px;
   }
   .topbar{grid-area:topbar;}
-  .arena{grid-area:mindy;}
-  .pet-content{display:contents;}
-  .pet-content > .xp-row{grid-area:xp;}
-  .pet-content > .stats-row{grid-area:stats;}
-  #rightTop{grid-area:rightTop;align-self:start;}
-  .pet-content > .hist-section{grid-area:hist;height:330px;overflow-y:auto;}
-  #adChico{grid-area:adchico;}
-  #adBig{grid-area:adbig;}
-  #igCard{grid-area:igcard;}
+  #colLeft{grid-area:colLeft;display:flex;flex-direction:column;gap:16px;}
+  #colRight{grid-area:colRight;display:flex;flex-direction:column;gap:16px;}
+  #bottomRow{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  #adStack{display:flex;flex-direction:column;}
+  .hist-section{height:330px;overflow-y:auto;}
   #petSpacer{display:none;}
   .hist-body{max-height:250px;overflow-y:auto;}
+
+  /* dentro de #colLeft/#colRight/#bottomRow/#adStack, orden natural del DOM
+     (no el de mobile) — se resetea el order que pusimos fuera del media query. */
+  #colLeft > *, #colRight > *, #bottomRow > *, #adStack > *{order:0;}
 }
