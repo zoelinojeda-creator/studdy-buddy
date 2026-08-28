@@ -359,8 +359,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
   .topbar{grid-area:topbar;}
   #colLeft{grid-area:colLeft;display:flex;flex-direction:column;gap:16px;}
   #colRight{grid-area:colRight;display:flex;flex-direction:column;gap:16px;}
-  #bottomRow{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-  #adStack{display:flex;flex-direction:column;}
+  #bottomRow{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:stretch;}
+  #adStack{display:flex;flex-direction:column;justify-content:space-between;height:100%;}
   .hist-section{height:330px;overflow-y:auto;}
   #petSpacer{display:none;}
   .hist-body{max-height:250px;overflow-y:auto;}
