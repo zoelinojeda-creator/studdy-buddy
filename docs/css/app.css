@@ -355,8 +355,9 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
       ".       colLeft  colRight .";
     column-gap:16px;
     row-gap:16px;
+    align-content:start;
   }
-  .topbar{grid-area:topbar;padding:0px 18px;}
+  .topbar{grid-area:topbar;padding:0px 18px;align-self:start;}
   .topbar > div:first-child{gap:11px;}
   #colLeft{grid-area:colLeft;display:flex;flex-direction:column;gap:16px;}
   #colRight{grid-area:colRight;display:flex;flex-direction:column;gap:16px;}
