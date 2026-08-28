@@ -348,7 +348,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
      despues 2 columnas independientes (#colLeft/#colRight) que se apilan
      cada una por su cuenta, sin compartir filas de grid entre si. */
   #mascota{
-    display:grid !important;
+    display:grid;
     grid-template-columns: 8% 1.1fr 1.9fr 8%;
     grid-template-areas:
       "topbar  topbar   topbar   topbar"

@@ -2,7 +2,6 @@
 //  SCREEN MANAGER
 // ══════════════════════════════════════════════════════
 var _cur = '';
-var _DISPLAY = {inicio:'flex', mascota:'block', actividad:'block', material:'block', juego:'block', resultados:'flex'};
 
 function showScreen(id) {
   // 1. destroy saliente
@@ -19,7 +18,7 @@ function showScreen(id) {
   for (var i = 0; i < all.length; i++) all[i].style.display = 'none';
   // 3. mostrar nueva
   var el = document.getElementById(id);
-  if (el) el.style.display = _DISPLAY[id] || 'block';
+  if (el) el.style.display = '';
   _cur = id;
   window.scrollTo(0, 0);
   // 4. init entrante
