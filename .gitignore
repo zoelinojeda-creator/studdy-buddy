@@ -1,0 +1,14 @@
+# Dependencias
+node_modules/
+
+# Builds
+dist/
+.turbo/
+*.tsbuildinfo
+
+# Entorno
+.env
+.env.local
+
+# Sistema
+.DS_Store
