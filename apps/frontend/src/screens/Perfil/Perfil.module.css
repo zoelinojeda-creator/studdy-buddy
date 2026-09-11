@@ -1,0 +1,112 @@
+.wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px 24px;
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.title {
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 0 0 8px;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.input {
+  padding: 11px;
+  background: var(--inp);
+  border: 1.5px solid var(--border);
+  border-radius: 11px;
+  color: var(--text);
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--accent);
+}
+
+.input:disabled {
+  opacity: 0.6;
+}
+
+.avatarRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.avatarBtn {
+  font-size: 1.6rem;
+  padding: 8px;
+  background: var(--inp);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.avatarBtnOn {
+  border-color: var(--accent);
+  background: rgba(249, 200, 70, 0.14);
+}
+
+.button {
+  padding: 12px;
+  background: var(--accent);
+  color: #1a1200;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.logout {
+  padding: 10px;
+  background: transparent;
+  color: var(--muted);
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.error {
+  color: var(--accent2);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.success {
+  color: var(--accent3);
+  font-size: 0.85rem;
+  margin: 0;
+}

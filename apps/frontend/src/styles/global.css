@@ -1,3 +1,23 @@
 /* Estilos globales compartidos de StudyBuddy: variables CSS, resets y
-   animaciones comunes a todas las pantallas migradas. Vacio por ahora —
-   se va completando a medida que migremos pantallas reales desde docs/. */
+   animaciones comunes a todas las pantallas migradas. Se va completando
+   a medida que migremos pantallas reales desde docs/. */
+
+:root {
+  --bg: #0d0f1a;
+  --panel: #161929;
+  --border: #252a42;
+  --accent: #f9c846;
+  --accent2: #ff6b6b;
+  --accent3: #6ee7b7;
+  --text: #e8eaf6;
+  --muted: #7b82a8;
+  --inp: #1e2235;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Nunito', system-ui, sans-serif;
+}

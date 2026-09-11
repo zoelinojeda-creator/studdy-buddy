@@ -1,21 +1,17 @@
-import styles from './App.module.css'
-import { useCounterStore } from './store/useCounterStore'
+import { useEffect } from 'react'
+import { useAuthStore } from './store/useAuthStore'
+import { Login } from './screens/Login/Login'
+import { Perfil } from './screens/Perfil/Perfil'
 
 function App() {
-  const count = useCounterStore((state) => state.count)
-  const increment = useCounterStore((state) => state.increment)
+  const session = useAuthStore((s) => s.session)
+  const init = useAuthStore((s) => s.init)
 
-  return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>StudyBuddy — Frontend nuevo funcionando</h1>
-      <div className={styles.counter}>
-        <span>{count}</span>
-        <button className={styles.button} onClick={increment}>
-          +1
-        </button>
-      </div>
-    </div>
-  )
+  useEffect(() => {
+    init()
+  }, [init])
+
+  return session ? <Perfil /> : <Login />
 }
 
 export default App
