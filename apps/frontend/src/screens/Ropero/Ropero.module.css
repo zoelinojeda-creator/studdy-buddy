@@ -1,0 +1,151 @@
+.wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 20px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px 24px;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.title {
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 0;
+}
+
+.xpBadge {
+  align-self: center;
+  background: var(--inp);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sectionTitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--inp);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 8px 10px;
+}
+
+.itemOn {
+  border-color: var(--accent);
+  background: rgba(249, 200, 70, 0.14);
+}
+
+.itemThumb {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.itemThumb :global(svg) {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.itemName {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.itemPrice {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.btnBuy,
+.btnEquip,
+.btnUnequip {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.btnBuy {
+  background: var(--accent);
+  color: #1a1200;
+}
+
+.btnBuy:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.btnEquip {
+  background: var(--accent3);
+  color: #06301c;
+}
+
+.btnUnequip {
+  background: transparent;
+  color: var(--muted);
+  border: 2px dashed var(--border);
+}
+
+.error {
+  color: var(--accent2);
+  font-size: 0.85rem;
+  margin: 0;
+  text-align: center;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin: 0;
+  text-align: center;
+}

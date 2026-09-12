@@ -23,6 +23,7 @@ interface AuthState {
   logout: () => Promise<void>
   loadProfile: (userId: string) => Promise<void>
   updateProfile: (updates: Partial<Pick<UserProfile, 'username' | 'avatar'>>) => Promise<void>
+  spendXp: (amount: number) => Promise<boolean>
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -81,5 +82,20 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       return
     }
     set({ profile: { ...profile, ...updates }, loading: false })
+  },
+
+  // Descuenta XP (compras del Ropero, etc.). Devuelve false si no alcanza el saldo.
+  spendXp: async (amount) => {
+    const { profile } = get()
+    if (!profile) return false
+    if (profile.xp < amount) return false
+    const newXp = profile.xp - amount
+    const { error } = await supabase.from('usuarios').update({ xp: newXp }).eq('id', profile.id)
+    if (error) {
+      set({ error: error.message })
+      return false
+    }
+    set({ profile: { ...profile, xp: newXp } })
+    return true
   },
 }))
