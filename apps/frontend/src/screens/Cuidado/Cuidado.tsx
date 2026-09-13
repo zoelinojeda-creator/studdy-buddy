@@ -98,7 +98,7 @@ export function Cuidado() {
         <h1 className={styles.title}>Cuidado de Mindy</h1>
         <div className={styles.xpBadge}>⭐ {profile.xp} XP disponible</div>
 
-        <MindyStage accessory={equipped} />
+        <MindyStage accessory={equipped} nivel={profile.level} />
 
         {message && <p className={styles.error}>{message}</p>}
         {loading && <p className={styles.hint}>Sincronizando...</p>}
