@@ -1,15 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuthStore } from '../../store/useAuthStore'
+import { AVATAR_OPTIONS } from '../../data/avatars'
 import styles from './Perfil.module.css'
-
-// Mismos avatares que docs/js/data.js (AV_EMOJI), sin 'invitado' (ese es solo para modo invitado).
-const AVATAR_OPTIONS = [
-  { key: 'huevo', emoji: '🐣' },
-  { key: 'zorro', emoji: '🦊' },
-  { key: 'rana', emoji: '🐸' },
-  { key: 'pulpo', emoji: '🐙' },
-  { key: 'mariposa', emoji: '🦋' },
-]
 
 export function Perfil() {
   const session = useAuthStore((s) => s.session)

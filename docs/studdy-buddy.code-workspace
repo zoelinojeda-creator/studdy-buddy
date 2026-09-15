@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"name": "studdy-buddy",
+			"path": ".."
+		},
+		{
+			"name": "app",
+			"path": "../../../../Downloads/study-buddy/app"
+		},
+		{
+			"name": "css",
+			"path": "../../../../Downloads/study-buddy/css"
+		},
+		{
+			"name": "js",
+			"path": "../../../../Downloads/study-buddy/js"
+		}
+	],
+	"settings": {}
+}

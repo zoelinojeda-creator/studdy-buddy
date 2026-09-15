@@ -3,7 +3,7 @@ import type { FormEvent } from 'react'
 import { useAuthStore } from '../../store/useAuthStore'
 import styles from './Login.module.css'
 
-export function Login() {
+export function Login({ onSwitchToRegistro }: { onSwitchToRegistro: () => void }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const login = useAuthStore((s) => s.login)
@@ -46,6 +46,10 @@ export function Login() {
 
         <button className={styles.button} type="submit" disabled={loading}>
           {loading ? 'Entrando...' : 'Entrar'}
+        </button>
+
+        <button className={styles.link} type="button" onClick={onSwitchToRegistro}>
+          ¿Sos nuevo? Creá una cuenta
         </button>
       </form>
     </div>

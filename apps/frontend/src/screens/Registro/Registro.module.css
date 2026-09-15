@@ -12,7 +12,7 @@
   border-radius: 20px;
   padding: 28px 24px;
   width: 100%;
-  max-width: 360px;
+  max-width: 380px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -29,7 +29,7 @@
 .label {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   font-size: 0.85rem;
   color: var(--muted);
   font-weight: 700;
@@ -49,6 +49,48 @@
   border-color: var(--accent);
 }
 
+.avatarRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.avatarBtn {
+  font-size: 1.6rem;
+  padding: 8px;
+  background: var(--inp);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.avatarBtnOn {
+  border-color: var(--accent);
+  background: rgba(249, 200, 70, 0.14);
+}
+
+.rolRow {
+  display: flex;
+  gap: 8px;
+}
+
+.rolBtn {
+  flex: 1;
+  padding: 12px;
+  background: var(--inp);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.rolBtnOn {
+  border-color: var(--accent);
+  background: rgba(249, 200, 70, 0.14);
+}
+
 .button {
   padding: 12px;
   background: var(--accent);
@@ -65,12 +107,6 @@
   cursor: default;
 }
 
-.error {
-  color: var(--accent2);
-  font-size: 0.85rem;
-  margin: 0;
-}
-
 .link {
   background: transparent;
   border: none;
@@ -79,4 +115,10 @@
   cursor: pointer;
   text-decoration: underline;
   padding: 0;
+}
+
+.error {
+  color: var(--accent2);
+  font-size: 0.85rem;
+  margin: 0;
 }

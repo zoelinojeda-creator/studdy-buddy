@@ -1,8 +1,11 @@
 import { create } from 'zustand'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
+import { backendFetch } from '../lib/backend'
 
 // Columnas reales de la tabla 'usuarios' (confirmadas en docs/js/storage.js).
+// "rol" es nueva (aulas/profesores) — toda cuenta existente la tiene en
+// 'alumno' por el DEFAULT de la columna.
 export interface UserProfile {
   id: string
   username: string
@@ -11,6 +14,23 @@ export interface UserProfile {
   level: number
   sessions: number
   streak: number
+  rol: 'alumno' | 'profesor'
+}
+
+// signUp() puede devolver session: null aunque el registro haya funcionado
+// bien — pasa cuando GoTrue todavia no ve el email confirmado en el
+// instante exacto de esa respuesta (el trigger auto_confirm_email corre
+// milisegundos despues, server-side, sin relacion con esta request). No hay
+// forma de "esperar mas" sobre la misma llamada a signUp() una vez que ya
+// respondio sin sesion — reintentamos login, que si evalua el estado fresco.
+async function reintentarLoginTrasConfirmacion(email: string, password: string): Promise<Session | null> {
+  const esperas = [300, 600, 1200]
+  for (const espera of esperas) {
+    await new Promise((resolve) => setTimeout(resolve, espera))
+    const { data } = await supabase.auth.signInWithPassword({ email, password })
+    if (data.session) return data.session
+  }
+  return null
 }
 
 interface AuthState {
@@ -20,6 +40,13 @@ interface AuthState {
   error: string | null
   init: () => void
   login: (email: string, password: string) => Promise<void>
+  signUp: (
+    email: string,
+    password: string,
+    username: string,
+    avatar: string,
+    rol: 'alumno' | 'profesor',
+  ) => Promise<void>
   logout: () => Promise<void>
   loadProfile: (userId: string) => Promise<void>
   updateProfile: (updates: Partial<Pick<UserProfile, 'username' | 'avatar'>>) => Promise<void>
@@ -56,6 +83,50 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
     set({ session: data.session, loading: false })
     if (data.session) await get().loadProfile(data.session.user.id)
+  },
+
+  // Registro nuevo (no existia en apps/frontend, solo en docs/js). La fila
+  // en 'usuarios' la crea el mismo mecanismo que ya usa la app vieja al
+  // hacer signUp (lee username/avatar de los metadatos) — no lo tocamos.
+  // El rol nace 'alumno' (default de la columna); si se eligio 'profesor'
+  // lo promovemos con una llamada al backend, valida solo porque la cuenta
+  // todavia no tuvo ninguna sesion (lo hace cumplir un trigger en Postgres).
+  signUp: async (email, password, username, avatar, rol) => {
+    set({ loading: true, error: null })
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { username, avatar } },
+    })
+    if (error) {
+      set({ loading: false, error: error.message })
+      return
+    }
+
+    let session = data.session
+    if (!session) {
+      session = await reintentarLoginTrasConfirmacion(email, password)
+    }
+    if (!session) {
+      set({ loading: false, error: 'Cuenta creada. Iniciá sesión en unos segundos.' })
+      return
+    }
+
+    set({ session })
+    if (rol === 'profesor') {
+      try {
+        await backendFetch(
+          '/auth/rol',
+          { method: 'POST', body: JSON.stringify({ rol: 'profesor' }) },
+          session.access_token,
+        )
+      } catch (err) {
+        set({ loading: false, error: err instanceof Error ? err.message : 'No se pudo asignar el rol' })
+        return
+      }
+    }
+    set({ loading: false })
+    await get().loadProfile(session.user.id)
   },
 
   logout: async () => {
