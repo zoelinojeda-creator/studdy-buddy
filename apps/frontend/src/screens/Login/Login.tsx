@@ -7,6 +7,7 @@ export function Login({ onSwitchToRegistro }: { onSwitchToRegistro: () => void }
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const login = useAuthStore((s) => s.login)
+  const loginAsGuest = useAuthStore((s) => s.loginAsGuest)
   const loading = useAuthStore((s) => s.loading)
   const error = useAuthStore((s) => s.error)
 
@@ -50,6 +51,10 @@ export function Login({ onSwitchToRegistro }: { onSwitchToRegistro: () => void }
 
         <button className={styles.link} type="button" onClick={onSwitchToRegistro}>
           ¿Sos nuevo? Creá una cuenta
+        </button>
+
+        <button className={styles.guestButton} type="button" onClick={loginAsGuest}>
+          👻 Entrar como invitado
         </button>
       </form>
     </div>

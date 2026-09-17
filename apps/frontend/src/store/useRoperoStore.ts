@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from './useAuthStore'
+import { guestStorage, GUEST_KEYS } from '../lib/guestStorage'
 import { ACCESSORIES, type Accessory } from '../data/accessories'
 
 // Persistencia: reusa la tabla mascota_estado ya usada por docs/ (app vieja).
@@ -18,6 +19,19 @@ import { ACCESSORIES, type Accessory } from '../data/accessories'
 //   tienda vieja escribe ahi. equipped_body quedo sin uso (un solo slot).
 
 const accessoryById = (id: string): Accessory | undefined => ACCESSORIES.find((a) => a.id === id)
+
+interface RoperoInvitado {
+  rawOwnedOutfits: string[]
+  equippedAccessory: string | null
+}
+
+function leerInvitado(): RoperoInvitado {
+  return guestStorage.leer<RoperoInvitado>(GUEST_KEYS.ropero) ?? { rawOwnedOutfits: [], equippedAccessory: null }
+}
+
+function guardarInvitado(estado: RoperoInvitado): void {
+  guestStorage.guardar(GUEST_KEYS.ropero, estado)
+}
 
 interface RoperoState {
   loading: boolean
@@ -49,6 +63,12 @@ export const useRoperoStore = create<RoperoState>((set, get) => ({
   isOwned: (id) => get().rawOwnedOutfits.includes(id),
 
   loadState: async (userId) => {
+    if (useAuthStore.getState().authMode === 'guest') {
+      const estado = leerInvitado()
+      set({ loading: false, loaded: true, ...estado })
+      return
+    }
+
     set({ loading: true, error: null })
     const { data, error } = await supabase
       .from('mascota_estado')
@@ -57,8 +77,15 @@ export const useRoperoStore = create<RoperoState>((set, get) => ({
       .single()
 
     if (error) {
-      // PGRST116 = no existe fila todavia (usuario nuevo en el ropero); no es un error real.
+      // PGRST116 = no existe fila todavia (usuario nuevo en el ropero). Antes
+      // esto solo seteaba el estado en memoria sin persistir — una cuenta
+      // que nunca compra nada se quedaba sin fila para siempre (mismo bug
+      // que tenia useCuidadoStore). Ahora se crea la fila con los defaults.
       if (error.code === 'PGRST116') {
+        const { error: upsertError } = await supabase
+          .from('mascota_estado')
+          .upsert({ user_id: userId, owned_outfits: [], ...LEGACY_DEFAULTS }, { onConflict: 'user_id' })
+        if (upsertError) console.warn('[Supabase] mascota_estado.upsert (ropero init) fallo:', upsertError.message)
         set({ loading: false, loaded: true, rawOwnedOutfits: [], equippedAccessory: null })
         return
       }
@@ -84,6 +111,12 @@ export const useRoperoStore = create<RoperoState>((set, get) => ({
 
     const nextOwned = [...get().rawOwnedOutfits, id]
 
+    if (useAuthStore.getState().authMode === 'guest') {
+      guardarInvitado({ rawOwnedOutfits: nextOwned, equippedAccessory: get().equippedAccessory })
+      set({ rawOwnedOutfits: nextOwned })
+      return { ok: true }
+    }
+
     const payload: Record<string, unknown> = { user_id: userId, owned_outfits: nextOwned }
     // Si la fila nunca existio, la creamos con defaults validos para la app vieja.
     const { data: existing } = await supabase
@@ -103,6 +136,12 @@ export const useRoperoStore = create<RoperoState>((set, get) => ({
   equipAccessory: async (userId, id) => {
     if (!get().isOwned(id)) return
 
+    if (useAuthStore.getState().authMode === 'guest') {
+      guardarInvitado({ rawOwnedOutfits: get().rawOwnedOutfits, equippedAccessory: id })
+      set({ equippedAccessory: id })
+      return
+    }
+
     const { error } = await supabase
       .from('mascota_estado')
       .upsert({ user_id: userId, equipped_head: id }, { onConflict: 'user_id' })
@@ -114,6 +153,12 @@ export const useRoperoStore = create<RoperoState>((set, get) => ({
   },
 
   unequipAccessory: async (userId) => {
+    if (useAuthStore.getState().authMode === 'guest') {
+      guardarInvitado({ rawOwnedOutfits: get().rawOwnedOutfits, equippedAccessory: null })
+      set({ equippedAccessory: null })
+      return
+    }
+
     const { error } = await supabase
       .from('mascota_estado')
       .upsert({ user_id: userId, equipped_head: null }, { onConflict: 'user_id' })

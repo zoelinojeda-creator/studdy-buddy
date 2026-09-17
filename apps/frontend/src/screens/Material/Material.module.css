@@ -1,0 +1,349 @@
+.wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 20px;
+}
+
+.card {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.back {
+  align-self: flex-start;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
+
+.headRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pill {
+  background: var(--inp);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.xpBadge {
+  background: var(--inp);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.title {
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 0;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text);
+  margin: 0;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--inp);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.sectionUpcoming {
+  composes: section;
+  opacity: 0.7;
+}
+
+.sectionTitle {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+
+.input {
+  padding: 11px;
+  background: var(--panel);
+  border: 1.5px solid var(--border);
+  border-radius: 11px;
+  color: var(--text);
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--accent);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  padding: 6px 12px;
+  background: var(--panel);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.chipOn {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(249, 200, 70, 0.14);
+}
+
+.hint {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.qtyRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.qtyBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--panel);
+  color: var(--accent);
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.qtyVal {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  min-width: 100px;
+  text-align: center;
+}
+
+.link {
+  align-self: flex-start;
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  font-size: 0.78rem;
+  cursor: pointer;
+  padding: 0;
+}
+
+.ayudaLista {
+  padding-left: 18px;
+  font-size: 0.8rem;
+  color: var(--text);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.ayudaLista a {
+  color: var(--accent);
+}
+
+.errorPanel {
+  border: 1.5px solid var(--accent2);
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.errorIcon {
+  font-size: 1.8rem;
+}
+
+.errorTitle {
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+
+.errorMsg {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin: 0 0 6px;
+}
+
+.sticky {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.progTrack {
+  height: 8px;
+  background: var(--inp);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progFill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.progLbl {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin: 0;
+  text-align: center;
+}
+
+.button,
+.buttonOn {
+  padding: 13px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.button {
+  background: var(--inp);
+  color: var(--muted);
+}
+
+.buttonOn {
+  background: var(--accent);
+  color: #1a1200;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Overlay de carga con la animacion de 4 pasos, igual que docs/js */
+.loadOv {
+  position: fixed;
+  inset: 0;
+  background: rgba(13, 15, 26, 0.95);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadCard {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 36px 32px;
+  text-align: center;
+  max-width: 340px;
+  width: 90%;
+}
+
+.spinner {
+  width: 52px;
+  height: 52px;
+  border: 4px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+  margin: 0 auto 17px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadTitle {
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 14px;
+}
+
+.stepList {
+  list-style: none;
+  text-align: left;
+  padding: 0;
+  margin: 0;
+}
+
+.stepList li {
+  padding: 7px 0;
+  font-size: 0.87rem;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  transition: all 0.3s;
+}
+
+.stepDone {
+  color: var(--accent3);
+  text-decoration: line-through;
+}
+
+.stepDot {
+  width: 19px;
+  height: 19px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  transition: all 0.3s;
+}
+
+.stepDone .stepDot {
+  background: var(--accent3);
+  border-color: var(--accent3);
+  color: #1a1200;
+}

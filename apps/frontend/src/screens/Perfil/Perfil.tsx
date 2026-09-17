@@ -5,6 +5,7 @@ import styles from './Perfil.module.css'
 
 export function Perfil() {
   const session = useAuthStore((s) => s.session)
+  const authMode = useAuthStore((s) => s.authMode)
   const profile = useAuthStore((s) => s.profile)
   const loading = useAuthStore((s) => s.loading)
   const error = useAuthStore((s) => s.error)
@@ -41,9 +42,21 @@ export function Perfil() {
       <div className={styles.card}>
         <h1 className={styles.title}>Tu perfil</h1>
 
+        {authMode === 'guest' && (
+          <p className={styles.guestNotice}>
+            👻 Estás jugando como invitado — tus datos se pierden al cerrar la pestaña.
+          </p>
+        )}
+
         <label className={styles.label}>
           Correo
-          <input className={styles.input} type="email" value={session?.user.email ?? ''} readOnly disabled />
+          <input
+            className={styles.input}
+            type="email"
+            value={authMode === 'guest' ? 'Invitado (sin cuenta)' : (session?.user.email ?? '')}
+            readOnly
+            disabled
+          />
         </label>
 
         <label className={styles.label}>

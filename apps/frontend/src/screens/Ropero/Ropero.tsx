@@ -50,7 +50,6 @@ function AccessoryRow({
 }
 
 export function Ropero() {
-  const session = useAuthStore((s) => s.session)
   const profile = useAuthStore((s) => s.profile)
 
   const loading = useRoperoStore((s) => s.loading)
@@ -63,7 +62,7 @@ export function Ropero() {
 
   const [message, setMessage] = useState<string | null>(null)
 
-  const userId = session?.user.id
+  const userId = profile?.id
 
   useEffect(() => {
     if (userId) loadState(userId)

@@ -10,5 +10,6 @@ export const AVATAR_OPTIONS = [
 ]
 
 export function avatarEmoji(key: string): string {
+  if (key === 'invitado') return '👻'
   return AVATAR_OPTIONS.find((a) => a.key === key)?.emoji ?? '❓'
 }

@@ -51,7 +51,6 @@ function ItemRow({ item, xp, onUse }: { item: Item; xp: number; onUse: () => voi
 }
 
 export function Cuidado() {
-  const session = useAuthStore((s) => s.session)
   const profile = useAuthStore((s) => s.profile)
 
   const roperoLoaded = useRoperoStore((s) => s.loaded)
@@ -65,7 +64,7 @@ export function Cuidado() {
 
   const [message, setMessage] = useState<string | null>(null)
 
-  const userId = session?.user.id
+  const userId = profile?.id
   const equipped = ACCESSORIES.find((a) => a.id === equippedAccessory)
 
   useEffect(() => {

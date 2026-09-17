@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from './useAuthStore'
+import { guestStorage, GUEST_KEYS } from '../lib/guestStorage'
 import type { Item, Necesidad } from '../data/items'
 
 // Persistencia: reusa mascota_estado (igual que useRoperoStore).
@@ -44,22 +45,58 @@ function clampNeed(n: number): number {
 
 // Misma logica que applyHungerDecay en docs/js/storage.js: baja proporcional
 // al tiempo real transcurrido desde el ultimo calculo, no a un temporizador.
-function decayValores(valores: Valores, goal: string, needsCalcAt: number | null): Valores {
-  if (needsCalcAt == null) return valores
+//
+// "changed" indica si el redondeo a entero produjo un cambio real en al
+// menos una necesidad. Bug real detectado: si cada sesion es corta (el drop
+// calculado es menor a 0.5), Math.round lo devuelve al mismo entero de
+// siempre y esa fraccion se pierde para siempre — el numero nunca se mueve
+// aunque pase tiempo real de sobra en total. El caller usa "changed" para
+// decidir si conviene avanzar needs_calc_at (si no cambio nada, se deja el
+// ancla vieja intacta para que el proximo calculo seguir sumando desde ahi,
+// en vez de reiniciar el reloj y perder ese tiempo acumulado).
+function decayValores(
+  valores: Valores,
+  goal: string,
+  needsCalcAt: number | null,
+): { valores: Valores; changed: boolean } {
+  if (needsCalcAt == null) return { valores, changed: false }
   const elapsed = Date.now() - needsCalcAt
-  if (elapsed <= 0) return valores
+  if (elapsed <= 0) return { valores, changed: false }
   const duration = GOAL_MS[goal] || GOAL_MS.normal
   const next = { ...valores }
+  let changed = false
   for (const necesidad of NECESIDADES) {
     const drop = (elapsed / duration) * NEED_MULTIPLIER[necesidad] * 100
-    next[necesidad] = clampNeed(next[necesidad] - drop)
+    const nuevo = clampNeed(next[necesidad] - drop)
+    if (nuevo !== next[necesidad]) changed = true
+    next[necesidad] = nuevo
   }
-  return next
+  return { valores: next, changed }
 }
 
 // Defaults de docs/js/storage.js — solo se usan si la fila mascota_estado
 // todavia no existe, para que la app vieja encuentre un estado valido.
 const LEGACY_DEFAULTS = { outfit: 'none', daily_goal: 'normal' }
+
+interface CuidadoInvitado {
+  valores: Valores
+  goal: string
+  needsCalcAt: number | null
+}
+
+function leerInvitado(): CuidadoInvitado {
+  return (
+    guestStorage.leer<CuidadoInvitado>(GUEST_KEYS.cuidado) ?? {
+      valores: { alimentacion: 75, diversion: 100, descanso: 100, higiene: 100 },
+      goal: 'normal',
+      needsCalcAt: null,
+    }
+  )
+}
+
+function guardarInvitado(estado: CuidadoInvitado): void {
+  guestStorage.guardar(GUEST_KEYS.cuidado, estado)
+}
 
 async function persist(userId: string, valores: Valores) {
   const payload: Record<string, unknown> = {
@@ -90,6 +127,7 @@ interface CuidadoState {
   needsCalcAt: number | null
   loadState: (userId: string) => Promise<void>
   useItem: (userId: string, item: Item) => Promise<{ ok: boolean; error?: string }>
+  alimentar: (userId: string, cantidad: number) => Promise<void>
 }
 
 export const useCuidadoStore = create<CuidadoState>((set, get) => ({
@@ -101,6 +139,16 @@ export const useCuidadoStore = create<CuidadoState>((set, get) => ({
   needsCalcAt: null,
 
   loadState: async (userId) => {
+    if (useAuthStore.getState().authMode === 'guest') {
+      const { valores, goal, needsCalcAt } = leerInvitado()
+      const { valores: decayed, changed } = decayValores(valores, goal, needsCalcAt)
+      const debeAnclar = changed || needsCalcAt == null
+      const nuevoNeedsCalcAt = debeAnclar ? Date.now() : needsCalcAt
+      set({ loading: false, loaded: true, valores: decayed, goal, needsCalcAt: nuevoNeedsCalcAt })
+      if (debeAnclar) guardarInvitado({ valores: decayed, goal, needsCalcAt: nuevoNeedsCalcAt })
+      return
+    }
+
     set({ loading: true, error: null })
     const { data, error } = await supabase
       .from('mascota_estado')
@@ -109,15 +157,14 @@ export const useCuidadoStore = create<CuidadoState>((set, get) => ({
       .single()
 
     if (error) {
-      // PGRST116 = no existe fila todavia (usuario nuevo); no es un error real.
+      // PGRST116 = no existe fila todavia (usuario nuevo). Antes esto solo
+      // seteaba el estado en memoria sin persistir — una cuenta que nunca
+      // compra/usa nada se quedaba sin fila para siempre. Ahora se crea la
+      // fila con los defaults y un needs_calc_at real desde el primer momento.
       if (error.code === 'PGRST116') {
-        set({
-          loading: false,
-          loaded: true,
-          valores: { alimentacion: 75, diversion: 100, descanso: 100, higiene: 100 },
-          goal: 'normal',
-          needsCalcAt: null,
-        })
+        const defaults: Valores = { alimentacion: 75, diversion: 100, descanso: 100, higiene: 100 }
+        set({ loading: false, loaded: true, valores: defaults, goal: 'normal', needsCalcAt: Date.now() })
+        await persist(userId, defaults)
         return
       }
       set({ loading: false, error: error.message })
@@ -132,15 +179,17 @@ export const useCuidadoStore = create<CuidadoState>((set, get) => ({
       descanso: data.descanso ?? 100,
       higiene: data.higiene ?? 100,
     }
-    const decayed = decayValores(base, goal, needsCalcAt)
+    const { valores: decayed, changed } = decayValores(base, goal, needsCalcAt)
+    const debeAnclar = changed || needsCalcAt == null
+    const nuevoNeedsCalcAt = debeAnclar ? Date.now() : needsCalcAt
 
-    set({ loading: false, loaded: true, valores: decayed, goal, needsCalcAt: Date.now() })
-    await persist(userId, decayed)
+    set({ loading: false, loaded: true, valores: decayed, goal, needsCalcAt: nuevoNeedsCalcAt })
+    if (debeAnclar) await persist(userId, decayed)
   },
 
   useItem: async (userId, item) => {
     const { valores, goal, needsCalcAt } = get()
-    const decayed = decayValores(valores, goal, needsCalcAt)
+    const { valores: decayed } = decayValores(valores, goal, needsCalcAt)
 
     const spent = await useAuthStore.getState().spendXp(item.precio)
     if (!spent) return { ok: false, error: 'No tenes suficiente XP' }
@@ -150,7 +199,29 @@ export const useCuidadoStore = create<CuidadoState>((set, get) => ({
       [item.necesidad]: clampNeed(decayed[item.necesidad] + item.recupera),
     }
     set({ valores: next, needsCalcAt: Date.now() })
+
+    if (useAuthStore.getState().authMode === 'guest') {
+      guardarInvitado({ valores: next, goal, needsCalcAt: Date.now() })
+      return { ok: true }
+    }
+
     await persist(userId, next)
     return { ok: true }
+  },
+
+  // Puerto de feedMindy(15) llamado por finishGame() al terminar el juego —
+  // gemelo de useItem() pero sin gastar XP (es un premio, no una compra).
+  alimentar: async (userId, cantidad) => {
+    const { valores, goal, needsCalcAt } = get()
+    const { valores: decayed } = decayValores(valores, goal, needsCalcAt)
+    const next: Valores = { ...decayed, alimentacion: clampNeed(decayed.alimentacion + cantidad) }
+    set({ valores: next, needsCalcAt: Date.now() })
+
+    if (useAuthStore.getState().authMode === 'guest') {
+      guardarInvitado({ valores: next, goal, needsCalcAt: Date.now() })
+      return
+    }
+
+    await persist(userId, next)
   },
 }))

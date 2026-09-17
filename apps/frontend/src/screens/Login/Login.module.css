@@ -80,3 +80,14 @@
   text-decoration: underline;
   padding: 0;
 }
+
+.guestButton {
+  padding: 10px;
+  background: transparent;
+  color: var(--muted);
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
