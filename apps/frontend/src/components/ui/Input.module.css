@@ -1,0 +1,28 @@
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.input {
+  padding: 11px;
+  background: var(--inp);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: var(--accent);
+}
+
+.input:disabled {
+  opacity: 0.6;
+}

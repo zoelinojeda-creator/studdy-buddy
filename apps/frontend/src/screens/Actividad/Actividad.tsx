@@ -1,5 +1,6 @@
 import { useAuthStore } from '../../store/useAuthStore'
 import { useEstudioStore } from '../../store/useEstudioStore'
+import { Button } from '../../components/ui/Button'
 import type { Metodo } from '../../lib/ai'
 import styles from './Actividad.module.css'
 
@@ -11,7 +12,12 @@ const METODOS: { id: Metodo; icono: string; nombre: string; descripcion: string;
   { id: 'rapid', icono: '⚡', nombre: 'Quiz Rápido', descripcion: 'Respondé rápido y acumulá racha', badge: 'Nuevo' },
 ]
 
-export function Actividad({ onContinuar }: { onContinuar: () => void }) {
+interface ActividadProps {
+  onContinuar: () => void
+  onVolverAMascota: () => void
+}
+
+export function Actividad({ onContinuar, onVolverAMascota }: ActividadProps) {
   const profile = useAuthStore((s) => s.profile)
   const method = useEstudioStore((s) => s.method)
   const setMethod = useEstudioStore((s) => s.setMethod)
@@ -19,6 +25,9 @@ export function Actividad({ onContinuar }: { onContinuar: () => void }) {
   return (
     <div className={styles.wrap}>
       <div className={styles.card}>
+        <Button variant="secondary" onClick={onVolverAMascota}>
+          ← Volver
+        </Button>
         <div className={styles.xpBadge}>⭐ {profile?.xp ?? 0} XP</div>
         <h1 className={styles.title}>Elegí tu método</h1>
         <p className={styles.subtitle}>Primero el método, luego cargás tu material</p>

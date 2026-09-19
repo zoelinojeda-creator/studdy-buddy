@@ -3,9 +3,10 @@ import type { FormEvent } from 'react'
 import { useAuthStore } from '../../store/useAuthStore'
 import { useAulasStore } from '../../store/useAulasStore'
 import { Ranking } from '../../components/Ranking'
+import { Button } from '../../components/ui/Button'
 import styles from './Aulas.module.css'
 
-export function AulasAlumno() {
+export function AulasAlumno({ onVolver }: { onVolver: () => void }) {
   const session = useAuthStore((s) => s.session)
 
   const misAulasAlumno = useAulasStore((s) => s.misAulasAlumno)
@@ -45,6 +46,10 @@ export function AulasAlumno() {
   return (
     <div className={styles.wrap}>
       <div className={styles.card}>
+        <Button variant="secondary" onClick={onVolver}>
+          ← Volver
+        </Button>
+
         <h1 className={styles.title}>Mis aulas</h1>
 
         <form className={styles.form} onSubmit={handleUnirse}>

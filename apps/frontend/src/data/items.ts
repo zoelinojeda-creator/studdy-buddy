@@ -6,6 +6,15 @@
 
 export type Necesidad = 'alimentacion' | 'diversion' | 'descanso' | 'higiene'
 
+// Compartido entre Mascota (barras de necesidad) y Cuidado (titulos de
+// seccion de la lista de items) para no duplicar el mismo mapa dos veces.
+export const NECESIDAD_LABEL: Record<Necesidad, { nombre: string; icono: string }> = {
+  alimentacion: { nombre: 'Alimentación', icono: '🍽️' },
+  diversion: { nombre: 'Diversión', icono: '🎈' },
+  descanso: { nombre: 'Descanso', icono: '🛌' },
+  higiene: { nombre: 'Higiene', icono: '🧴' },
+}
+
 export interface Item {
   id: string
   nombre: string

@@ -1,5 +1,6 @@
 import { useAuthStore } from '../../store/useAuthStore'
 import { useEstudioStore } from '../../store/useEstudioStore'
+import { Button } from '../../components/ui/Button'
 import styles from './Resultados.module.css'
 
 // Mismo corte de emoji/titulo/subtitulo por porcentaje que docs/js/screens/resultados.js.
@@ -10,7 +11,13 @@ function desempeño(pct: number): { emoji: string; titulo: string; sub: string }
   return { emoji: '📚', titulo: 'A estudiar más!', sub: 'La práctica lleva a la perfección' }
 }
 
-export function Resultados({ onNuevoTema, onRepetir }: { onNuevoTema: () => void; onRepetir: () => void }) {
+interface ResultadosProps {
+  onNuevoTema: () => void
+  onRepetir: () => void
+  onVolverAMascota: () => void
+}
+
+export function Resultados({ onNuevoTema, onRepetir, onVolverAMascota }: ResultadosProps) {
   const profile = useAuthStore((s) => s.profile)
   const resultados = useEstudioStore((s) => s.resultados)
   const nuevoTema = useEstudioStore((s) => s.nuevoTema)
@@ -72,6 +79,10 @@ export function Resultados({ onNuevoTema, onRepetir }: { onNuevoTema: () => void
             Repetir
           </button>
         </div>
+
+        <Button variant="secondary" onClick={onVolverAMascota}>
+          ← Volver a Mascota
+        </Button>
       </div>
     </div>
   )

@@ -28,7 +28,7 @@ interface Resultado {
   rachaNueva: boolean
 }
 
-interface HistorialEntry {
+export interface HistorialEntry {
   materia: string
   tema: string
   actividad: string
@@ -70,6 +70,7 @@ interface EstudioState {
   questionCount: number
   preguntas: Pregunta[] | null
   resultados: Resultado | null
+  historial: HistorialEntry[]
   loading: boolean
   error: string | null
   setMethod: (method: Metodo) => void
@@ -79,6 +80,8 @@ interface EstudioState {
   generate: () => Promise<{ ok: boolean }>
   terminarJuego: (correct: number, wrong: number, score: number) => Promise<void>
   nuevoTema: () => void
+  cargarHistorial: (userId: string) => Promise<void>
+  borrarHistorial: () => void
 }
 
 export const useEstudioStore = create<EstudioState>((set, get) => ({
@@ -88,6 +91,7 @@ export const useEstudioStore = create<EstudioState>((set, get) => ({
   questionCount: Q_MIN,
   preguntas: null,
   resultados: null,
+  historial: [],
   loading: false,
   error: null,
 
@@ -144,4 +148,44 @@ export const useEstudioStore = create<EstudioState>((set, get) => ({
   // Puerto de nuevoTema() (docs/js/screens/resultados.js): limpia
   // metodo/materia/tema/preguntas, mantiene questionCount.
   nuevoTema: () => set({ method: null, subject: '', topic: '', preguntas: null, resultados: null, error: null }),
+
+  // Puerto de fetchHistorialFromSupabase()/getHistorial() (docs/js/storage.js):
+  // invitado lee directo de sessionStorage (ya cachea las ultimas 10 en
+  // agregarHistorial); cuenta real lee de Supabase ordenado por fecha, tope 10.
+  cargarHistorial: async (userId) => {
+    if (useAuthStore.getState().authMode === 'guest') {
+      const hist = guestStorage.leer<HistorialEntry[]>(GUEST_KEYS.historial) ?? []
+      set({ historial: hist })
+      return
+    }
+    const { data, error } = await supabase
+      .from('historial')
+      .select('materia, tema, actividad, porcentaje, xp, fecha')
+      .eq('user_id', userId)
+      .order('fecha', { ascending: false })
+      .limit(10)
+    if (error) {
+      console.warn('[Supabase] historial.select fallo:', error.message)
+      return
+    }
+    set({
+      historial: (data ?? []).map((row) => ({
+        materia: row.materia,
+        tema: row.tema,
+        actividad: row.actividad,
+        fecha: formatFecha(new Date(row.fecha)),
+        porcentaje: row.porcentaje,
+        xp: row.xp,
+      })),
+    })
+  },
+
+  // Puerto de clearHistorial() (docs/js/storage.js): solo limpia el cache
+  // local/estado en memoria, nunca borra las filas ya insertadas en Supabase.
+  borrarHistorial: () => {
+    if (useAuthStore.getState().authMode === 'guest') {
+      guestStorage.guardar(GUEST_KEYS.historial, [])
+    }
+    set({ historial: [] })
+  },
 }))

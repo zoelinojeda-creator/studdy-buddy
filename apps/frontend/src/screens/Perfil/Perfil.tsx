@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useAuthStore } from '../../store/useAuthStore'
 import { AVATAR_OPTIONS } from '../../data/avatars'
+import { Button } from '../../components/ui/Button'
+import { Card } from '../../components/ui/Card'
+import { Input } from '../../components/ui/Input'
 import styles from './Perfil.module.css'
 
-export function Perfil() {
+export function Perfil({ onVolver }: { onVolver: () => void }) {
   const session = useAuthStore((s) => s.session)
   const authMode = useAuthStore((s) => s.authMode)
   const profile = useAuthStore((s) => s.profile)
@@ -39,7 +42,11 @@ export function Perfil() {
 
   return (
     <div className={styles.wrap}>
-      <div className={styles.card}>
+      <Card className={styles.card}>
+        <Button variant="secondary" onClick={onVolver}>
+          ← Volver
+        </Button>
+
         <h1 className={styles.title}>Tu perfil</h1>
 
         {authMode === 'guest' && (
@@ -48,29 +55,23 @@ export function Perfil() {
           </p>
         )}
 
-        <label className={styles.label}>
-          Correo
-          <input
-            className={styles.input}
-            type="email"
-            value={authMode === 'guest' ? 'Invitado (sin cuenta)' : (session?.user.email ?? '')}
-            readOnly
-            disabled
-          />
-        </label>
+        <Input
+          label="Correo"
+          type="email"
+          value={authMode === 'guest' ? 'Invitado (sin cuenta)' : (session?.user.email ?? '')}
+          readOnly
+          disabled
+        />
 
-        <label className={styles.label}>
-          Usuario
-          <input
-            className={styles.input}
-            type="text"
-            value={username}
-            onChange={(e) => {
-              setUsername(e.target.value)
-              setSaved(false)
-            }}
-          />
-        </label>
+        <Input
+          label="Usuario"
+          type="text"
+          value={username}
+          onChange={(e) => {
+            setUsername(e.target.value)
+            setSaved(false)
+          }}
+        />
 
         <div className={styles.label}>
           Avatar
@@ -94,14 +95,14 @@ export function Perfil() {
         {error && <p className={styles.error}>{error}</p>}
         {saved && !error && <p className={styles.success}>Guardado!</p>}
 
-        <button className={styles.button} type="button" onClick={handleSave} disabled={loading}>
+        <Button variant="primary" onClick={handleSave} disabled={loading}>
           {loading ? 'Guardando...' : 'Guardar'}
-        </button>
+        </Button>
 
-        <button className={styles.logout} type="button" onClick={logout}>
+        <Button variant="secondary" onClick={logout}>
           Cerrar sesión
-        </button>
-      </div>
+        </Button>
+      </Card>
     </div>
   )
 }

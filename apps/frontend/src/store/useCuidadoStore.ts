@@ -98,7 +98,7 @@ function guardarInvitado(estado: CuidadoInvitado): void {
   guestStorage.guardar(GUEST_KEYS.cuidado, estado)
 }
 
-async function persist(userId: string, valores: Valores) {
+async function persist(userId: string, valores: Valores, goal?: string) {
   const payload: Record<string, unknown> = {
     user_id: userId,
     hunger: clampNeed(valores.alimentacion),
@@ -107,6 +107,7 @@ async function persist(userId: string, valores: Valores) {
     higiene: clampNeed(valores.higiene),
     needs_calc_at: new Date().toISOString(),
   }
+  if (goal !== undefined) payload.daily_goal = goal
   const { data: existing } = await supabase
     .from('mascota_estado')
     .select('user_id')
@@ -128,6 +129,7 @@ interface CuidadoState {
   loadState: (userId: string) => Promise<void>
   useItem: (userId: string, item: Item) => Promise<{ ok: boolean; error?: string }>
   alimentar: (userId: string, cantidad: number) => Promise<void>
+  setGoal: (userId: string, goal: string) => Promise<void>
 }
 
 export const useCuidadoStore = create<CuidadoState>((set, get) => ({
@@ -223,5 +225,21 @@ export const useCuidadoStore = create<CuidadoState>((set, get) => ({
     }
 
     await persist(userId, next)
+  },
+
+  // Puerto de setGoal() (docs/js/screens/mascota.js): decae bajo la meta
+  // vieja antes de cambiarla (mismo criterio que applyHungerDecay previo a
+  // reasignar APP.mindy.goal), despues ancla needs_calc_at a ahora.
+  setGoal: async (userId, goal) => {
+    const { valores, goal: goalViejo, needsCalcAt } = get()
+    const { valores: decayed } = decayValores(valores, goalViejo, needsCalcAt)
+    set({ valores: decayed, goal, needsCalcAt: Date.now() })
+
+    if (useAuthStore.getState().authMode === 'guest') {
+      guardarInvitado({ valores: decayed, goal, needsCalcAt: Date.now() })
+      return
+    }
+
+    await persist(userId, decayed, goal)
   },
 }))

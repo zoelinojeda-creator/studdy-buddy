@@ -3,9 +3,10 @@ import type { FormEvent } from 'react'
 import { useAulasStore } from '../../store/useAulasStore'
 import { avatarEmoji } from '../../data/avatars'
 import { Ranking } from '../../components/Ranking'
+import { Button } from '../../components/ui/Button'
 import styles from './Aulas.module.css'
 
-export function AulasProfesor() {
+export function AulasProfesor({ onVolver }: { onVolver: () => void }) {
   const misAulas = useAulasStore((s) => s.misAulas)
   const loading = useAulasStore((s) => s.loading)
   const alumnosPorAula = useAulasStore((s) => s.alumnosPorAula)
@@ -54,6 +55,10 @@ export function AulasProfesor() {
   return (
     <div className={styles.wrap}>
       <div className={styles.card}>
+        <Button variant="secondary" onClick={onVolver}>
+          ← Volver
+        </Button>
+
         <h1 className={styles.title}>Mis aulas</h1>
 
         <form className={styles.form} onSubmit={handleCrear}>

@@ -43,7 +43,7 @@ interface RoperoState {
   isOwned: (id: string) => boolean
   loadState: (userId: string) => Promise<void>
   buyAccessory: (userId: string, id: string) => Promise<{ ok: boolean; error?: string }>
-  equipAccessory: (userId: string, id: string) => Promise<void>
+  equipAccessory: (userId: string, id: string) => Promise<boolean>
   unequipAccessory: (userId: string) => Promise<void>
 }
 
@@ -134,12 +134,12 @@ export const useRoperoStore = create<RoperoState>((set, get) => ({
   },
 
   equipAccessory: async (userId, id) => {
-    if (!get().isOwned(id)) return
+    if (!get().isOwned(id)) return false
 
     if (useAuthStore.getState().authMode === 'guest') {
       guardarInvitado({ rawOwnedOutfits: get().rawOwnedOutfits, equippedAccessory: id })
       set({ equippedAccessory: id })
-      return
+      return true
     }
 
     const { error } = await supabase
@@ -147,9 +147,10 @@ export const useRoperoStore = create<RoperoState>((set, get) => ({
       .upsert({ user_id: userId, equipped_head: id }, { onConflict: 'user_id' })
     if (error) {
       set({ error: error.message })
-      return
+      return false
     }
     set({ equippedAccessory: id })
+    return true
   },
 
   unequipAccessory: async (userId) => {

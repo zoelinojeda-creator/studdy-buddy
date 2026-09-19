@@ -1,27 +1,15 @@
-.wrap {
-  min-height: 100vh;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 20px;
-}
-
 .card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 28px 24px;
   width: 100%;
   max-width: 420px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--space-3);
 }
 
 .title {
   text-align: center;
-  font-size: 1.4rem;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
   color: var(--accent);
   margin: 0;
 }
@@ -30,9 +18,9 @@
   align-self: center;
   background: var(--inp);
   border: 1.5px solid var(--border);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   padding: 6px 14px;
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
   font-weight: 700;
   color: var(--text);
 }
@@ -40,11 +28,11 @@
 .section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .sectionTitle {
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
   font-weight: 700;
   color: var(--muted);
   text-transform: uppercase;
@@ -52,31 +40,48 @@
   margin: 0;
 }
 
-.list {
+/* Puerto de .sh-grid/.sh-item (docs/css/app.css, "Tienda de Ropa"): grid de
+   tarjetas cuadradas, no una lista de filas. .itemCardOn ("wearing" en la
+   app vieja) usa menta, no dorado — asi es en el CSS real. */
+.itemsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+}
+
+.itemCard {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.item {
-  display: flex;
   align-items: center;
-  gap: 10px;
   background: var(--inp);
-  border: 2px solid transparent;
-  border-radius: 12px;
-  padding: 8px 10px;
+  border: 2px solid var(--border);
+  border-radius: 13px;
+  padding: 11px 7px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.itemOn {
+.itemCard:hover:not(:disabled) {
   border-color: var(--accent);
-  background: rgba(249, 200, 70, 0.14);
+  transform: scale(1.04);
+}
+
+.itemCard:disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+
+.itemCardOn {
+  border-color: var(--accent3);
+  background: rgba(110, 231, 183, 0.07);
 }
 
 .itemThumb {
-  width: 40px;
-  height: 40px;
-  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 3px;
 }
 
 .itemThumb :global(svg) {
@@ -85,67 +90,51 @@
   display: block;
 }
 
-.itemInfo {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 0;
-}
-
-.itemName {
-  font-size: 0.9rem;
+.itemNm {
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--text);
+  display: block;
 }
 
-.itemPrice {
-  font-size: 0.75rem;
+.itemPr {
+  font-size: 0.7rem;
+  color: var(--accent);
+  display: block;
+  margin-top: 1px;
+}
+
+.itemState {
+  font-size: 0.7rem;
   color: var(--muted);
+  display: block;
+  margin-top: 1px;
 }
 
-.btnBuy,
-.btnEquip,
-.btnUnequip {
-  padding: 8px 12px;
-  border: none;
-  border-radius: 10px;
+.itemStateOn {
+  font-size: 0.7rem;
+  color: var(--accent3);
   font-weight: 700;
-  font-size: 0.8rem;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.btnBuy {
-  background: var(--accent);
-  color: #1a1200;
-}
-
-.btnBuy:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-
-.btnEquip {
-  background: var(--accent3);
-  color: #06301c;
-}
-
-.btnUnequip {
-  background: transparent;
-  color: var(--muted);
-  border: 2px dashed var(--border);
+  display: block;
+  margin-top: 1px;
 }
 
 .error {
   color: var(--accent2);
-  font-size: 0.85rem;
+  font-size: var(--fs-sm);
   margin: 0;
   text-align: center;
 }
 
 .hint {
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: var(--fs-sm);
   margin: 0;
   text-align: center;
+}
+
+@media (min-width: 768px) {
+  .itemsGrid {
+    grid-template-columns: repeat(5, 1fr);
+  }
 }

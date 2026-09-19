@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useAuthStore } from '../../store/useAuthStore'
+import { Button } from '../../components/ui/Button'
+import { Card } from '../../components/ui/Card'
+import { Input } from '../../components/ui/Input'
 import styles from './Login.module.css'
 
 export function Login({ onSwitchToRegistro }: { onSwitchToRegistro: () => void }) {
@@ -18,45 +21,41 @@ export function Login({ onSwitchToRegistro }: { onSwitchToRegistro: () => void }
 
   return (
     <div className={styles.wrap}>
-      <form className={styles.card} onSubmit={handleSubmit}>
-        <h1 className={styles.title}>StudyBuddy</h1>
+      <Card className={styles.card}>
+        <form className={styles.form} onSubmit={handleSubmit}>
+          <h1 className={styles.title}>StudyBuddy</h1>
 
-        <label className={styles.label}>
-          Correo
-          <input
-            className={styles.input}
+          <Input
+            label="Correo"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-        </label>
 
-        <label className={styles.label}>
-          Contraseña
-          <input
-            className={styles.input}
+          <Input
+            label="Contraseña"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </label>
 
-        {error && <p className={styles.error}>{error}</p>}
+          {error && <p className={styles.error}>{error}</p>}
 
-        <button className={styles.button} type="submit" disabled={loading}>
-          {loading ? 'Entrando...' : 'Entrar'}
-        </button>
+          <Button variant="primary" type="submit" disabled={loading}>
+            {loading ? 'Entrando...' : 'Entrar'}
+          </Button>
 
-        <button className={styles.link} type="button" onClick={onSwitchToRegistro}>
-          ¿Sos nuevo? Creá una cuenta
-        </button>
+          <button className={styles.link} type="button" onClick={onSwitchToRegistro}>
+            ¿Sos nuevo? Creá una cuenta
+          </button>
 
-        <button className={styles.guestButton} type="button" onClick={loginAsGuest}>
-          👻 Entrar como invitado
-        </button>
-      </form>
+          <Button variant="secondary" onClick={loginAsGuest}>
+            👻 Entrar como invitado
+          </Button>
+        </form>
+      </Card>
     </div>
   )
 }
