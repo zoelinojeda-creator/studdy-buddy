@@ -1,0 +1,60 @@
+/* .mindy-row / .mindy-egg / .bubble de docs/css/app.css */
+@keyframes bobble {
+  0%,
+  100% {
+    transform: rotate(-4deg) translateY(0);
+  }
+  50% {
+    transform: rotate(4deg) translateY(-7px);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0) rotate(-12deg);
+    opacity: 0;
+  }
+  80% {
+    transform: scale(1.12) rotate(2deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 6px;
+  position: relative;
+}
+
+.box {
+  position: relative;
+}
+
+.egg {
+  cursor: pointer;
+  filter: drop-shadow(0 4px 14px rgba(110, 231, 183, 0.35));
+}
+
+/* Se alterna con anim.scareShort (no se suman): asi no hay dos
+   animaciones peleando por el mismo elemento. */
+.eggBob {
+  animation: bobble 2.6s ease-in-out infinite;
+}
+
+.bubble {
+  position: absolute;
+  top: -8px;
+  right: calc(50% - 95px);
+  background: var(--panel);
+  border: 2px solid var(--accent3);
+  border-radius: 13px 13px 13px 3px;
+  padding: 5px 11px;
+  font-size: 0.77rem;
+  color: var(--accent3);
+  white-space: nowrap;
+  animation: popIn 0.35s ease;
+}

@@ -26,3 +26,24 @@
 .input:disabled {
   opacity: 0.6;
 }
+
+/* .inp-ico / .inp-field: emoji a la izquierda, 38px de padding. */
+.field {
+  position: relative;
+  display: flex;
+}
+
+.icon {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  pointer-events: none;
+}
+
+.withIcon {
+  flex: 1;
+  min-width: 0;
+  padding-left: 38px;
+}

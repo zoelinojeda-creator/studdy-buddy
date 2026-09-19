@@ -1,6 +1,9 @@
+/* Radio y padding via variables para que una pantalla pueda pedir los
+   valores exactos de su referencia (p.ej. .login-card: 24px / 20px)
+   sin pelear por orden de cascada entre CSS Modules. */
 .card {
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-5);
+  border-radius: var(--card-radius, var(--radius-lg));
+  padding: var(--card-padding, var(--space-5));
 }

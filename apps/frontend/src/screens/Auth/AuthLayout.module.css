@@ -1,0 +1,121 @@
+/* #inicio, .login-wrap, .logo-area, .logo-txt, .logo-sub, .xp-deco,
+   .login-card, .tabs, .tab, .auth-foot de docs/css/app.css */
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes xpGrow {
+  from {
+    width: 0;
+  }
+}
+
+.wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+}
+
+.loginWrap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  animation: cardIn 0.55s ease;
+}
+
+.logoArea {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.logoTxt {
+  font-family: var(--font-display);
+  font-size: var(--fs-xxl);
+  background: linear-gradient(135deg, var(--accent), var(--accent-grad));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.logoSub {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 3px;
+}
+
+.xpDeco {
+  height: 5px;
+  background: linear-gradient(90deg, var(--accent3), var(--accent));
+  border-radius: 3px;
+  margin: 8px 0 16px;
+  animation: xpGrow 1.4s ease;
+}
+
+/* .login-card: padding 24px, radio 20px (valores exactos de la referencia,
+   pasados a Card via sus variables). */
+.card {
+  --card-padding: 24px;
+  --card-radius: 20px;
+}
+
+.tabs {
+  display: flex;
+  background: var(--inp);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 18px;
+}
+
+.tab {
+  flex: 1;
+  padding: 9px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.92rem;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tabOn {
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+
+.foot {
+  text-align: center;
+  margin-top: 11px;
+  font-size: 0.83rem;
+  color: var(--muted);
+}
+
+.footLink {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: inherit;
+  font-weight: 700;
+}
+
+@media (min-width: 768px) {
+  .loginWrap {
+    max-width: 460px;
+  }
+}

@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useAuthStore } from '../../store/useAuthStore'
+import { toast } from '../../store/useToastStore'
 import { useRoperoStore } from '../../store/useRoperoStore'
 import { useCuidadoStore } from '../../store/useCuidadoStore'
 import { useEstudioStore } from '../../store/useEstudioStore'
@@ -10,7 +11,11 @@ import { Button } from '../../components/ui/Button'
 import { Modal } from '../../components/ui/Modal'
 import { Ropero } from '../Ropero/Ropero'
 import { Cuidado } from '../Cuidado/Cuidado'
+import anim from '../../styles/animations.module.css'
 import styles from './Mascota.module.css'
+
+// Mensajes de poke() (docs/js/screens/mascota.js).
+const POKES = ['¡Ay!', '¡Cuidado!', '¡Hehe!', '¡Epa!']
 
 // Las otras 3 necesidades de Cuidado, mostradas ahora siempre en .arena
 // junto a la barra de Hambre (alimentacion) que ya estaba ahi.
@@ -94,8 +99,21 @@ export function Mascota(props: MascotaProps) {
 
   const [histAbierto, setHistAbierto] = useState(false)
   const [modalAbierto, setModalAbierto] = useState<ModalAbierto>(null)
+  const [poking, setPoking] = useState(false)
+  const pokeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   const userId = profile?.id
+
+  useEffect(() => () => clearTimeout(pokeTimer.current), [])
+
+  // Puerto de poke() (docs/js/screens/mascota.js): Mindy hace "scare" (.5s)
+  // y sale un toast al azar.
+  function poke() {
+    setPoking(true)
+    clearTimeout(pokeTimer.current)
+    pokeTimer.current = setTimeout(() => setPoking(false), 500)
+    toast(POKES[Math.floor(Math.random() * POKES.length)])
+  }
 
   useEffect(() => {
     if (userId && !roperoLoaded) loadRopero(userId)
@@ -157,11 +175,16 @@ export function Mascota(props: MascotaProps) {
               ⭐<span className={styles.coinLbl}>+30</span>
             </div>
           </div>
-          <div data-mindy-anchor>
-            <MindyStage accessory={equipped} nivel={profile.level} />
-          </div>
-          <div className={styles.mName}>
-            Mindy <span className={styles.lvlBadge}>Nv.{profile.level}</span>
+          <div className={styles.monsterWrap} onClick={poke}>
+            <div
+              data-mindy-anchor
+              className={poking ? `${styles.pokeTarget} ${anim.scare}` : styles.pokeTarget}
+            >
+              <MindyStage accessory={equipped} nivel={profile.level} />
+            </div>
+            <div className={styles.mName}>
+              Mindy <span className={styles.lvlBadge}>Nv.{profile.level}</span>
+            </div>
           </div>
           <div className={styles.hWrap}>
             <div className={styles.hRow}>

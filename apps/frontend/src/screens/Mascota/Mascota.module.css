@@ -222,6 +222,23 @@
   transition: width 0.3s ease;
 }
 
+/* .monster-wrap / .msv de docs/css/app.css: toda la zona (Mindy + nombre)
+   es clickeable (poke), y solo Mindy crece al pasar el mouse. */
+.monsterWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.pokeTarget {
+  transition: transform 0.2s;
+}
+
+.pokeTarget:hover {
+  transform: scale(1.05);
+}
+
 .mName {
   font-family: var(--font-display);
   color: var(--accent3);

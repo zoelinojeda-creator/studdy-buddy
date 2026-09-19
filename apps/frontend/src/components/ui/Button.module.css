@@ -67,3 +67,47 @@
 .success:hover:not(:disabled) {
   background: rgba(110, 231, 183, 0.22);
 }
+
+/* Modificadores — van al final a proposito: comparten especificidad con
+   .button y ganan por orden dentro de este mismo archivo. */
+
+/* .btn-gold */
+.lg {
+  padding: 13px;
+  font-size: var(--fs-md);
+  border-radius: 14px;
+}
+
+/* .btn-ghost */
+.ghostSize {
+  padding: 11px;
+  font-size: 0.93rem;
+  border-radius: 13px;
+}
+
+.block {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ripple() de docs/js/utils.js (.ripple-s) */
+.rippleHost {
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes ripAnim {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.28);
+  animation: ripAnim 0.55s linear;
+  transform: scale(0);
+  pointer-events: none;
+}

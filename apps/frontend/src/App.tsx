@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useAuthStore } from './store/useAuthStore'
 import { BgCanvas } from './components/BgCanvas'
+import { Toast } from './components/Toast'
+import { AuthLayout } from './screens/Auth/AuthLayout'
 import { Login } from './screens/Login/Login'
 import { Registro } from './screens/Registro/Registro'
 import { Mascota } from './screens/Mascota/Mascota'
@@ -48,11 +50,14 @@ function App() {
   // esto — por eso el contenido de pantalla se arma aparte y se agrega
   // como hijo suyo en el return final, en vez de retornarse directo.
   function renderContent() {
+    // AuthLayout se mantiene montado al alternar pestanas: solo cambia el
+    // panel de adentro (como #pLogin/#pReg en la referencia), asi el
+    // huevo y la animacion de entrada de la tarjeta no se reinician.
     if (authMode === null) {
-      return authView === 'login' ? (
-        <Login onSwitchToRegistro={() => setAuthView('registro')} />
-      ) : (
-        <Registro onSwitchToLogin={() => setAuthView('login')} />
+      return (
+        <AuthLayout tab={authView} onTabChange={setAuthView}>
+          {authView === 'login' ? <Login /> : <Registro />}
+        </AuthLayout>
       )
     }
 
@@ -108,6 +113,7 @@ function App() {
   return (
     <>
       <BgCanvas />
+      <Toast />
       {renderContent()}
     </>
   )

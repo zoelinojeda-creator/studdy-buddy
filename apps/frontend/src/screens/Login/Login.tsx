@@ -2,11 +2,12 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useAuthStore } from '../../store/useAuthStore'
 import { Button } from '../../components/ui/Button'
-import { Card } from '../../components/ui/Card'
 import { Input } from '../../components/ui/Input'
 import styles from './Login.module.css'
 
-export function Login({ onSwitchToRegistro }: { onSwitchToRegistro: () => void }) {
+// Panel #pLogin de docs/index.html. El marco (huevo, logo, pestanas, pie)
+// lo pone AuthLayout, montado en App.tsx.
+export function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const login = useAuthStore((s) => s.login)
@@ -20,42 +21,40 @@ export function Login({ onSwitchToRegistro }: { onSwitchToRegistro: () => void }
   }
 
   return (
-    <div className={styles.wrap}>
-      <Card className={styles.card}>
-        <form className={styles.form} onSubmit={handleSubmit}>
-          <h1 className={styles.title}>StudyBuddy</h1>
+    <>
+      <form className={styles.form} onSubmit={handleSubmit}>
+        <Input
+          label="Correo"
+          icon="👤"
+          type="email"
+          placeholder="tu@correo.com"
+          autoComplete="username"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
 
-          <Input
-            label="Correo"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+        <Input
+          label="Contraseña"
+          icon="🔒"
+          type="password"
+          placeholder="••••••••"
+          autoComplete="current-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
 
-          <Input
-            label="Contraseña"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+        {error && <p className={styles.error}>{error}</p>}
 
-          {error && <p className={styles.error}>{error}</p>}
+        <Button variant="primary" size="lg" block ripple type="submit" disabled={loading}>
+          {loading ? 'Entrando...' : 'Entrar 🚀'}
+        </Button>
+      </form>
 
-          <Button variant="primary" type="submit" disabled={loading}>
-            {loading ? 'Entrando...' : 'Entrar'}
-          </Button>
-
-          <button className={styles.link} type="button" onClick={onSwitchToRegistro}>
-            ¿Sos nuevo? Creá una cuenta
-          </button>
-
-          <Button variant="secondary" onClick={loginAsGuest}>
-            👻 Entrar como invitado
-          </Button>
-        </form>
-      </Card>
-    </div>
+      <Button variant="secondary" size="ghost" block className={styles.guest} onClick={loginAsGuest}>
+        👻 Entrar como invitado
+      </Button>
+    </>
   )
 }

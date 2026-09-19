@@ -2,9 +2,15 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useAuthStore } from '../../store/useAuthStore'
 import { AVATAR_OPTIONS } from '../../data/avatars'
+import { Button } from '../../components/ui/Button'
+import { Input } from '../../components/ui/Input'
+import { PasswordMeter } from './PasswordMeter'
 import styles from './Registro.module.css'
 
-export function Registro({ onSwitchToLogin }: { onSwitchToLogin: () => void }) {
+// Panel #pReg de docs/index.html. El marco (huevo, logo, pestanas, pie) lo
+// pone AuthLayout, montado en App.tsx. El selector Alumno/Profesor no
+// existe en la referencia: es propio de este frontend.
+export function Registro() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [username, setUsername] = useState('')
@@ -12,6 +18,7 @@ export function Registro({ onSwitchToLogin }: { onSwitchToLogin: () => void }) {
   const [rol, setRol] = useState<'alumno' | 'profesor'>('alumno')
 
   const signUp = useAuthStore((s) => s.signUp)
+  const loginAsGuest = useAuthStore((s) => s.loginAsGuest)
   const loading = useAuthStore((s) => s.loading)
   const error = useAuthStore((s) => s.error)
 
@@ -21,61 +28,62 @@ export function Registro({ onSwitchToLogin }: { onSwitchToLogin: () => void }) {
   }
 
   return (
-    <div className={styles.wrap}>
-      <form className={styles.card} onSubmit={handleSubmit}>
-        <h1 className={styles.title}>Crear cuenta</h1>
+    <>
+      <div className={styles.avatarBlock}>
+        <div className={styles.avatarCaption}>Elige tu avatar</div>
+        <div className={styles.avatars}>
+          {AVATAR_OPTIONS.map((opt) => (
+            <button
+              key={opt.key}
+              type="button"
+              className={avatar === opt.key ? `${styles.av} ${styles.avOn}` : styles.av}
+              onClick={() => setAvatar(opt.key)}
+            >
+              {opt.emoji}
+            </button>
+          ))}
+        </div>
+      </div>
 
-        <label className={styles.label}>
-          Correo
-          <input
-            className={styles.input}
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </label>
+      <form className={styles.form} onSubmit={handleSubmit}>
+        <Input
+          label="Usuario"
+          icon="👤"
+          type="text"
+          placeholder="Estudiante123"
+          autoComplete="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+        />
 
-        <label className={styles.label}>
-          Contraseña
-          <input
-            className={styles.input}
+        <Input
+          label="Correo"
+          icon="📧"
+          type="email"
+          placeholder="tu@correo.com"
+          autoComplete="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+
+        <div className={styles.pwGroup}>
+          <Input
+            label="Contraseña"
+            icon="🔒"
             type="password"
+            placeholder="Mínimo 6 caracteres"
+            autoComplete="new-password"
             minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </label>
-
-        <label className={styles.label}>
-          Usuario
-          <input
-            className={styles.input}
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </label>
-
-        <div className={styles.label}>
-          Avatar
-          <div className={styles.avatarRow}>
-            {AVATAR_OPTIONS.map((opt) => (
-              <button
-                key={opt.key}
-                type="button"
-                className={avatar === opt.key ? `${styles.avatarBtn} ${styles.avatarBtnOn}` : styles.avatarBtn}
-                onClick={() => setAvatar(opt.key)}
-              >
-                {opt.emoji}
-              </button>
-            ))}
-          </div>
+          <PasswordMeter value={password} />
         </div>
 
-        <div className={styles.label}>
+        <div className={styles.rolLabel}>
           ¿Sos alumno o profesor?
           <div className={styles.rolRow}>
             <button
@@ -97,14 +105,14 @@ export function Registro({ onSwitchToLogin }: { onSwitchToLogin: () => void }) {
 
         {error && <p className={styles.error}>{error}</p>}
 
-        <button className={styles.button} type="submit" disabled={loading}>
-          {loading ? 'Creando cuenta...' : 'Crear cuenta'}
-        </button>
-
-        <button className={styles.link} type="button" onClick={onSwitchToLogin}>
-          ¿Ya tenés cuenta? Iniciá sesión
-        </button>
+        <Button variant="primary" size="lg" block ripple type="submit" disabled={loading}>
+          {loading ? 'Creando cuenta...' : 'Crear cuenta 🎉'}
+        </Button>
       </form>
-    </div>
+
+      <Button variant="secondary" size="ghost" block className={styles.guest} onClick={loginAsGuest}>
+        👻 Entrar como invitado
+      </Button>
+    </>
   )
 }
